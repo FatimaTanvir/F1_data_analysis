@@ -18,6 +18,19 @@ library(ggplot2)
 
 ```{r}
 #reading files
-
+circuits<- read.csv("f1data/circuits.csv")
+constructor_results<- read.csv("f1data/constructor_results.csv")
+constructor_standings<- read.csv("f1data/constructor_standings.csv")
+constructors<- read.csv("f1data/constructors.csv")
+driver_standings<- read.csv("f1data/driver_standings.csv")
+drivers<- read.csv("f1data/drivers.csv")
+lap_times<- read.csv("f1data/lap_times.csv")
+pit_stops<- read.csv("f1data/pit_stops.csv")
+qualifying<- read.csv("f1data/qualifying.csv")
+races<- read.csv("f1data/races.csv")
+results<- read.csv("f1data/results.csv")
+seasons<- read.csv("f1data/seasons.csv")
+sprint_results<- read.csv("f1data/sprint_results.csv")
+status<- read.csv("f1data/status.csv")
 ```
 
