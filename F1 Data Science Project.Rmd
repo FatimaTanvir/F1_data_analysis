@@ -14,16 +14,10 @@ knitr::opts_chunk$set(echo = TRUE)
 #packages
 library(dplyr)
 library(ggplot2)
-library(tidyverse)
 ```
 
 ```{r}
 #reading files
-constructors = read_csv('constructors.csv')
-drivers = read_csv('drivers.csv')
-circuits = read_csv('circuits.csv')
-lap_times = ('lap_times.csv')
-qualifying = ('qualifying.csv')
-races = ('races.csv')
+
 ```
 
