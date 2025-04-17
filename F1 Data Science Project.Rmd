@@ -14,6 +14,7 @@ knitr::opts_chunk$set(echo = TRUE)
 #packages
 library(dplyr)
 library(ggplot2)
+library(tidyverse)
 ```
 
 ```{r}
@@ -33,4 +34,52 @@ seasons<- read.csv("f1data/seasons.csv")
 sprint_results<- read.csv("f1data/sprint_results.csv")
 status<- read.csv("f1data/status.csv")
 
+
 ```
+
+
+```{r}
+# Function to convert "min:sec.ms" string to total seconds (as a number)
+time_to_seconds <- function(time_str) {
+  parts <- str_split_fixed(time_str, ":", 2)
+  minutes <- as.numeric(parts[, 1])
+  seconds_ms <- as.numeric(parts[, 2])
+  return(minutes * 60 + seconds_ms)
+}
+
+# Function to convert total seconds back to "min:sec.ms" format
+seconds_to_time <- function(total_seconds) {
+  minutes <- floor(total_seconds / 60)
+  remaining_seconds <- total_seconds - (minutes * 60)
+  return(sprintf("%d:%.3f", minutes, remaining_seconds))
+}
+```
+
+```{r}
+#Using functions to average lap times and mutate a new column
+qualifying_average <- qualifying %>%
+  mutate(
+    q1_seconds = sapply(q1, time_to_seconds),
+    q2_seconds = sapply(q2, time_to_seconds),
+    q3_seconds = sapply(q3, time_to_seconds),
+    average_seconds = case_when(
+      !is.na(q1_seconds) & !is.na(q2_seconds) & !is.na(q3_seconds) ~ (q1_seconds + q2_seconds + q3_seconds) / 3,
+      !is.na(q1_seconds) & !is.na(q2_seconds) & is.na(q3_seconds) ~ (q1_seconds + q2_seconds) / 2,
+      TRUE ~ q1_seconds 
+    ),
+    average_time = sapply(average_seconds, seconds_to_time)
+  ) %>%
+  select(-q1_seconds, -q2_seconds, -q3_seconds)
+```
+
+```{r}
+#bringing years to qualifying data to use for graphing
+qualify_and_races<-inner_join(qualifying_average,races)
+```
+
+```{r}
+#graph for ferrari aka ID 6
+qualify_and_races %>% group_by(constructorId = 6) %>%  ggplot(aes(x = year, y = average_seconds)) + geom_smooth()
+
+```
+
