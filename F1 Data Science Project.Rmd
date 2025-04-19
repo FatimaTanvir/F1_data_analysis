@@ -72,15 +72,72 @@ qualifying_average <- qualifying %>%
   select(-q1_seconds, -q2_seconds, -q3_seconds)
 ```
 
+
 ```{r}
 #bringing years to qualifying data to use for graphing
-qualify_and_races<-inner_join(qualifying_average,races)
+qualify_and_races<-left_join(races, qualifying_average)
+```
+
+
+```{r}
+#graph for all teams
+qualify_and_races %>% ggplot(aes(x = year, y = average_seconds)) + geom_smooth()
+
 ```
 
 ```{r}
-#graph for ferrari aka ID 6
-#eric's slide
-qualify_and_races %>% group_by(constructorId = 6) %>%  ggplot(aes(x = year, y = average_seconds)) + geom_smooth()
+
+#graph for ferrari qualifying times
+ferrari_qualifying<- qualify_and_races %>% filter(constructorId == 6)
+
+
+ferrari_qualifying %>%  ggplot(aes(x = year, y = average_seconds)) + geom_smooth()
+```
+```{r}
+#Using functions to average fastest lap times and mutate a new column
+results_LapTimeSeconds <- results %>%
+  mutate(
+    fastestLapTime_seconds = sapply(fastestLapTime , time_to_seconds))
+```
+
+
+```{r}
+#bringing years to results data
+
+results_and_races<- left_join(races, results_LapTimeSeconds, by = join_by(raceId))
 
 ```
 
+
+```{r}
+#graph for all teams
+results_and_races %>% ggplot(aes(x = year, y = fastestLapTime_seconds)) + geom_smooth()
+```
+
+```{r}
+#filtering for ferrari
+ferrari_results<- results_and_races %>% filter(constructorId == 6)
+
+#graph for ferrari results
+ferrari_results %>% ggplot(aes(x = year, y = fastestLapTime_seconds)) + geom_smooth()
+```
+
+```{r}
+#Ferrari fastest lap speed over time
+ferrari_results %>% ggplot(aes(x = year, y = as.numeric(fastestLapSpeed))) + geom_smooth()
+```
+
+```{r}
+#Ferrari finish position over time
+ferrari_results %>% ggplot(aes(x = year,y =  positionOrder)) + geom_smooth()
+```
+
+```{r}
+#Ferrari rank over time
+ferrari_results %>% ggplot(aes(x = year, y = as.numeric(rank))) + geom_smooth()
+```
+
+```{r}
+#Ferrari race run time over time
+ferrari_results %>% ggplot(aes(x = year, y = as.numeric(milliseconds)/3600000)) + geom_smooth()
+```
