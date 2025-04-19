@@ -141,3 +141,14 @@ ferrari_results %>% ggplot(aes(x = year, y = as.numeric(rank))) + geom_smooth()
 #Ferrari race run time over time
 ferrari_results %>% ggplot(aes(x = year, y = as.numeric(milliseconds)/3600000)) + geom_smooth()
 ```
+
+```{r}
+#bringing years to constructor data to use for graphing
+constructor_standings_and_races<-left_join(races, constructor_standings)
+
+#filter for Ferrari
+ferrari_standings<- constructor_standings_and_races %>% filter(constructorId ==6)
+
+#Ferrari standings wins over time
+ferrari_standings %>% ggplot(aes(x = year, y = as.numeric(wins))) + geom_col()
+```
