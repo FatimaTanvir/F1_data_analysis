@@ -34,12 +34,13 @@ seasons<- read.csv("f1data/seasons.csv")
 sprint_results<- read.csv("f1data/sprint_results.csv")
 status<- read.csv("f1data/status.csv")
 
-
 ```
 
 
 ```{r}
-# Function to convert "min:sec.ms" string to total seconds (as a number)
+#Functions
+
+#convert "min:sec.ms" string to total seconds (as a number)
 time_to_seconds <- function(time_str) {
   parts <- str_split_fixed(time_str, ":", 2)
   minutes <- as.numeric(parts[, 1])
@@ -47,16 +48,14 @@ time_to_seconds <- function(time_str) {
   return(minutes * 60 + seconds_ms)
 }
 
-# Function to convert total seconds back to "min:sec.ms" format
+#convert total seconds back to "min:sec.ms" format
 seconds_to_time <- function(total_seconds) {
   minutes <- floor(total_seconds / 60)
   remaining_seconds <- total_seconds - (minutes * 60)
   return(sprintf("%d:%.3f", minutes, remaining_seconds))
 }
-```
 
-```{r}
-#Using functions to average lap times and mutate a new column
+#average lap times and mutate a new column
 qualifying_average <- qualifying %>%
   mutate(
     q1_seconds = sapply(q1, time_to_seconds),
@@ -74,81 +73,59 @@ qualifying_average <- qualifying %>%
 
 
 ```{r}
-#bringing years to qualifying data to use for graphing
-qualify_and_races<-left_join(races, qualifying_average)
-```
+#Joins to add years to data frames for graphing
 
+#qualifying data
+qualifying_by_year<-left_join(races, qualifying_average)
 
-```{r}
-#graph for all teams
-qualify_and_races %>% ggplot(aes(x = year, y = average_seconds)) + geom_smooth()
-
-```
-
-```{r}
-
-#graph for ferrari qualifying times
-ferrari_qualifying<- qualify_and_races %>% filter(constructorId == 6)
-
-
-ferrari_qualifying %>%  ggplot(aes(x = year, y = average_seconds)) + geom_smooth()
-```
-```{r}
-#Using functions to average fastest lap times and mutate a new column
+#results data
 results_LapTimeSeconds <- results %>%
-  mutate(
-    fastestLapTime_seconds = sapply(fastestLapTime , time_to_seconds))
+  mutate(fastestLapTime_seconds = sapply(fastestLapTime , time_to_seconds))
+results_by_year<- left_join(races, results_LapTimeSeconds, by = join_by(raceId))
 ```
 
 
 ```{r}
-#bringing years to results data
+#Graphs for Part A: Overview of all current F1 teams
 
-results_and_races<- left_join(races, results_LapTimeSeconds, by = join_by(raceId))
+#average qual time by year
+qualifying_by_year %>% ggplot(aes(x = year, y = average_seconds)) + geom_smooth()
+
+#fastest lap time by year
+results_by_year %>% ggplot(aes(x = year, y = fastestLapTime_seconds)) + geom_smooth()
+
+#constructor standings by year
+constructor_standings_by_year<-left_join(races, constructor_standings)
 
 ```
 
-
 ```{r}
-#graph for all teams
-results_and_races %>% ggplot(aes(x = year, y = fastestLapTime_seconds)) + geom_smooth()
-```
+# graphs for Part B: A closer look at Ferrari
 
-```{r}
 #filtering for ferrari
-ferrari_results<- results_and_races %>% filter(constructorId == 6)
+ferrari_qualifying<- qualifying_by_year %>% filter(constructorId == 6)
+ferrari_results<- results_by_year %>% filter(constructorId == 6)
+ferrari_standings<- constructor_standings_by_year %>% filter(constructorId ==6)
 
-#graph for ferrari results
+#ferrari qualifying times by year
+ferrari_qualifying %>%  ggplot(aes(x = year, y = average_seconds)) + geom_smooth()
+
+#Ferrari fastest lap times by year
 ferrari_results %>% ggplot(aes(x = year, y = fastestLapTime_seconds)) + geom_smooth()
-```
 
-```{r}
 #Ferrari fastest lap speed over time
 ferrari_results %>% ggplot(aes(x = year, y = as.numeric(fastestLapSpeed))) + geom_smooth()
-```
 
-```{r}
 #Ferrari finish position over time
 ferrari_results %>% ggplot(aes(x = year,y =  positionOrder)) + geom_smooth()
-```
 
-```{r}
 #Ferrari rank over time
 ferrari_results %>% ggplot(aes(x = year, y = as.numeric(rank))) + geom_smooth()
-```
 
-```{r}
 #Ferrari race run time over time
 ferrari_results %>% ggplot(aes(x = year, y = as.numeric(milliseconds)/3600000)) + geom_smooth()
-```
 
-```{r}
-#bringing years to constructor data to use for graphing
-constructor_standings_and_races<-left_join(races, constructor_standings)
-
-#filter for Ferrari
-ferrari_standings<- constructor_standings_and_races %>% filter(constructorId ==6)
-
-#Ferrari standings wins over time
+#Ferrari wins over time
 ferrari_standings %>% ggplot(aes(x = year, y = as.numeric(wins))) + geom_col()
 ```
+
