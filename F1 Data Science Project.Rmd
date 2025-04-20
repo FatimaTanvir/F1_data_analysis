@@ -96,13 +96,13 @@ relevant_results = left_join(x = results, y = constructors) %>% filter(name == '
                           name == 'Aston Martin' | name == 'Ferrari' | 
                           name =='Haas' | name == 'McLaren' | 
                           name == 'Mercedes' | name == 'AlphaTauri' |
-                          name == 'Red Bull' | name == 'Saber' |
+                          name == 'Red Bull' | name == 'Sauber' |
                           name == 'Williams')
 relevant_constructors = constructors %>% filter(name == 'Alpine' | 
                           name == 'Aston Martin' | name == 'Ferrari' | 
                           name =='Haas' | name == 'McLaren' | 
                           name == 'Mercedes' | name == 'AlphaTauri' |
-                          name == 'Red Bull' | name == 'Saber' |
+                          name == 'Red Bull' | name == 'Sauber' |
                           name == 'Williams')
 
 ```
@@ -115,7 +115,7 @@ qualifying_by_year %>% filter(name.y == 'Alpine' |
                       name.y == 'Aston Martin' | name.y == 'Ferrari' | 
                       name.y =='Haas' | name.y == 'McLaren' | 
                       name.y == 'Mercedes' | name.y == 'AlphaTauri' |
-                      name.y == 'Red Bull' | name.y == 'Saber' |
+                      name.y == 'Red Bull' | name.y == 'Sauber' |
                       name.y == 'Williams') %>% ggplot(aes(x = year,
                                                 y = average_seconds, color = 
                                                 name.y)) + geom_smooth(se = 
@@ -126,7 +126,7 @@ results_by_year %>% filter(name.y == 'Alpine' |
                       name.y == 'Aston Martin' | name.y == 'Ferrari' | 
                       name.y =='Haas' | name.y == 'McLaren' | 
                       name.y == 'Mercedes' | name.y == 'AlphaTauri' |
-                      name.y == 'Red Bull' | name.y == 'Saber' |
+                      name.y == 'Red Bull' | name.y == 'Sauber' |
                       name.y == 'Williams') %>% ggplot(aes(x = year, 
                                     y = fastestLapTime_seconds, color = name.y)) + geom_smooth(se = FALSE)
 
@@ -138,8 +138,19 @@ constructor_wins = overview_results %>% filter(win == TRUE) %>%
   group_by(name.y, year) %>% count(win) %>% select(win_count = n)
 constructor_wins2 = overview_results %>% filter(win == TRUE)
 
+ggplot(constructor_wins, aes(x = year, y = win_count, fill = name.y)) + geom_col(color = '#616161', width = 2, alpha = 1/2)
 
-ggplot(constructor_wins, aes(x = year, fill = name.y)) + geom_histogram(binwidth = 2)
+
+#fastest lap time by year
+results_by_year %>% filter(name.y == 'Alpine' | 
+                      name.y == 'Aston Martin' | name.y == 'Ferrari' | 
+                      name.y =='Haas' | name.y == 'McLaren' | 
+                      name.y == 'Mercedes' | name.y == 'AlphaTauri' |
+                      name.y == 'Red Bull' | name.y == 'Sauber' |
+                      name.y == 'Williams') %>% drop_na(fastestLapTime_seconds) %>% ggplot(aes(x = year, y = 
+                                              fastestLapTime_seconds, color = name.y)) + 
+                                              geom_smooth(alpha = 1/5) 
+
 
 
 ```
