@@ -92,15 +92,15 @@ constructor_standings_by_year<-left_join(races, constructor_standings)
 
 ```{r}
 #filters for current teams on the grid
-relevant_results = left_join(x = results, y = constructors) %>% filter(name == 'Alpine' | 
+relevant_results = left_join(x = results, y = constructors) %>% filter(name == 'Alpine F1 Team' | 
                           name == 'Aston Martin' | name == 'Ferrari' | 
-                          name =='Haas' | name == 'McLaren' | 
+                          name =='Haas F1 Team' | name == 'McLaren' | 
                           name == 'Mercedes' | name == 'AlphaTauri' |
                           name == 'Red Bull' | name == 'Sauber' |
                           name == 'Williams')
-relevant_constructors = constructors %>% filter(name == 'Alpine' | 
+relevant_constructors = constructors %>% filter(name == 'Alpine F1 Team' | 
                           name == 'Aston Martin' | name == 'Ferrari' | 
-                          name =='Haas' | name == 'McLaren' | 
+                          name =='Haas F1 Team' | name == 'McLaren' | 
                           name == 'Mercedes' | name == 'AlphaTauri' |
                           name == 'Red Bull' | name == 'Sauber' |
                           name == 'Williams')
@@ -111,9 +111,9 @@ relevant_constructors = constructors %>% filter(name == 'Alpine' |
 #Graphs for Part A: Overview of all current F1 teams
 
 #average qual time by year
-qualifying_by_year %>% filter(name.y == 'Alpine' | 
+qualifying_by_year %>% filter(name.y == 'Alpine F1 Team' | 
                       name.y == 'Aston Martin' | name.y == 'Ferrari' | 
-                      name.y =='Haas' | name.y == 'McLaren' | 
+                      name.y =='Haas F1 Team' | name.y == 'McLaren' | 
                       name.y == 'Mercedes' | name.y == 'AlphaTauri' |
                       name.y == 'Red Bull' | name.y == 'Sauber' |
                       name.y == 'Williams') %>% ggplot(aes(x = year,
@@ -122,9 +122,9 @@ qualifying_by_year %>% filter(name.y == 'Alpine' |
                                                           FALSE)
 
 #fastest lap time by year
-results_by_year %>% filter(name.y == 'Alpine' | 
+results_by_year %>% filter(name.y == 'Alpine F1 Team' | 
                       name.y == 'Aston Martin' | name.y == 'Ferrari' | 
-                      name.y =='Haas' | name.y == 'McLaren' | 
+                      name.y =='Haas F1 Team' | name.y == 'McLaren' | 
                       name.y == 'Mercedes' | name.y == 'AlphaTauri' |
                       name.y == 'Red Bull' | name.y == 'Sauber' |
                       name.y == 'Williams') %>% ggplot(aes(x = year, 
@@ -142,9 +142,9 @@ ggplot(constructor_wins, aes(x = year, y = win_count, fill = name.y)) + geom_col
 
 
 #fastest lap time by year
-results_by_year %>% filter(name.y == 'Alpine' | 
+results_by_year %>% filter(name.y == 'Alpine F1 Team' | 
                       name.y == 'Aston Martin' | name.y == 'Ferrari' | 
-                      name.y =='Haas' | name.y == 'McLaren' | 
+                      name.y =='Haas F1 Team' | name.y == 'McLaren' | 
                       name.y == 'Mercedes' | name.y == 'AlphaTauri' |
                       name.y == 'Red Bull' | name.y == 'Sauber' |
                       name.y == 'Williams') %>% drop_na(fastestLapTime_seconds) %>% ggplot(aes(x = year, y = 
