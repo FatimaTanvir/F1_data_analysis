@@ -76,53 +76,70 @@ qualifying_average <- qualifying %>%
 #Joins to add years to data frames for graphing
 
 #qualifying data
-qualifying_by_year<-left_join(races, qualifying_average)
+qualifying_by_year<-left_join(races, qualifying_average) 
+qualifying_by_year = left_join(qualifying_by_year, constructors, by = join_by(constructorId))
 
 #results data by year
 results_LapTimeSeconds <- results %>%
   mutate(fastestLapTime_seconds = sapply(fastestLapTime , time_to_seconds))
 
 results_by_year<- left_join(races, results_LapTimeSeconds, by = join_by(raceId))
+results_by_year = left_join(results_by_year, constructors, by = join_by(constructorId))
 
 #constructor standings by year
 constructor_standings_by_year<-left_join(races, constructor_standings)
 ```
 
+```{r}
+#filters for current teams on the grid
+relevant_results = left_join(x = results, y = constructors) %>% filter(name == 'Alpine' | 
+                          name == 'Aston Martin' | name == 'Ferrari' | 
+                          name =='Haas' | name == 'McLaren' | 
+                          name == 'Mercedes' | name == 'AlphaTauri' |
+                          name == 'Red Bull' | name == 'Saber' |
+                          name == 'Williams')
+relevant_constructors = constructors %>% filter(name == 'Alpine' | 
+                          name == 'Aston Martin' | name == 'Ferrari' | 
+                          name =='Haas' | name == 'McLaren' | 
+                          name == 'Mercedes' | name == 'AlphaTauri' |
+                          name == 'Red Bull' | name == 'Saber' |
+                          name == 'Williams')
+
+```
 
 ```{r}
 #Graphs for Part A: Overview of all current F1 teams
 
-#filtering for current teams on the grid
-relevant_results = results %>%  filter(constructorId == 214 | 
-                          constructorId == 117 | constructorId == 6 | 
-                          constructorId == 1210 | constructorId == 1 | 
-                          constructorId == 131 | constructorId == 213 |
-                          constructorId == 9 | constructorId == 15 |
-                          constructorId == 3)
-relevant_constructors = constructors %>% filter(constructorId == 214 | 
-                          constructorId == 117 | constructorId == 6 | 
-                          constructorId == 1210 | constructorId == 1 | 
-                          constructorId == 131 | constructorId == 213 |
-                          constructorId == 9 | constructorId == 15 |
-                          constructorId == 3)
-
 #average qual time by year
-qualifying_by_year %>% filter(constructorId == 214 | 
-                          constructorId == 117 | constructorId == 6 | 
-                          constructorId == 1210 | constructorId == 1 | 
-                          constructorId == 131 | constructorId == 213 |
-                          constructorId == 9 | constructorId == 15 |
-                          constructorId == 3) %>% ggplot(aes(x = year,
-                                        y = average_seconds)) + geom_smooth()
+qualifying_by_year %>% filter(name.y == 'Alpine' | 
+                      name.y == 'Aston Martin' | name.y == 'Ferrari' | 
+                      name.y =='Haas' | name.y == 'McLaren' | 
+                      name.y == 'Mercedes' | name.y == 'AlphaTauri' |
+                      name.y == 'Red Bull' | name.y == 'Saber' |
+                      name.y == 'Williams') %>% ggplot(aes(x = year,
+                                                y = average_seconds, color = 
+                                                name.y)) + geom_smooth(se = 
+                                                          FALSE)
 
 #fastest lap time by year
-results_by_year %>% filter(constructorId == 214 | 
-                          constructorId == 117 | constructorId == 6 | 
-                          constructorId == 1210 | constructorId == 1 | 
-                          constructorId == 131 | constructorId == 213 |
-                          constructorId == 9 | constructorId == 15 |
-                          constructorId == 3) %>% ggplot(aes(x = year, 
-                                    y = fastestLapTime_seconds)) + geom_smooth()
+results_by_year %>% filter(name.y == 'Alpine' | 
+                      name.y == 'Aston Martin' | name.y == 'Ferrari' | 
+                      name.y =='Haas' | name.y == 'McLaren' | 
+                      name.y == 'Mercedes' | name.y == 'AlphaTauri' |
+                      name.y == 'Red Bull' | name.y == 'Saber' |
+                      name.y == 'Williams') %>% ggplot(aes(x = year, 
+                                    y = fastestLapTime_seconds, color = name.y)) + geom_smooth(se = FALSE)
+
+#wins by year for current teams
+overview_results = left_join(x =races, y = relevant_results, by = join_by(raceId))
+overview_results = left_join(overview_results, constructors, by = join_by(constructorId))
+overview_results$win = overview_results$position == '1'
+constructor_wins = overview_results %>% filter(win == TRUE) %>% 
+  group_by(name.y, year) %>% count(win) %>% select(win_count = n)
+constructor_wins2 = overview_results %>% filter(win == TRUE)
+
+
+ggplot(constructor_wins, aes(x = year, fill = name.y)) + geom_histogram(binwidth = 2)
 
 
 ```
