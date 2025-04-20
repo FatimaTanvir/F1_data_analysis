@@ -78,24 +78,52 @@ qualifying_average <- qualifying %>%
 #qualifying data
 qualifying_by_year<-left_join(races, qualifying_average)
 
-#results data
+#results data by year
 results_LapTimeSeconds <- results %>%
   mutate(fastestLapTime_seconds = sapply(fastestLapTime , time_to_seconds))
+
 results_by_year<- left_join(races, results_LapTimeSeconds, by = join_by(raceId))
+
+#constructor standings by year
+constructor_standings_by_year<-left_join(races, constructor_standings)
 ```
 
 
 ```{r}
 #Graphs for Part A: Overview of all current F1 teams
 
+#filtering for current teams on the grid
+relevant_results = results %>%  filter(constructorId == 214 | 
+                          constructorId == 117 | constructorId == 6 | 
+                          constructorId == 1210 | constructorId == 1 | 
+                          constructorId == 131 | constructorId == 213 |
+                          constructorId == 9 | constructorId == 15 |
+                          constructorId == 3)
+relevant_constructors = constructors %>% filter(constructorId == 214 | 
+                          constructorId == 117 | constructorId == 6 | 
+                          constructorId == 1210 | constructorId == 1 | 
+                          constructorId == 131 | constructorId == 213 |
+                          constructorId == 9 | constructorId == 15 |
+                          constructorId == 3)
+
 #average qual time by year
-qualifying_by_year %>% ggplot(aes(x = year, y = average_seconds)) + geom_smooth()
+qualifying_by_year %>% filter(constructorId == 214 | 
+                          constructorId == 117 | constructorId == 6 | 
+                          constructorId == 1210 | constructorId == 1 | 
+                          constructorId == 131 | constructorId == 213 |
+                          constructorId == 9 | constructorId == 15 |
+                          constructorId == 3) %>% ggplot(aes(x = year,
+                                        y = average_seconds)) + geom_smooth()
 
 #fastest lap time by year
-results_by_year %>% ggplot(aes(x = year, y = fastestLapTime_seconds)) + geom_smooth()
+results_by_year %>% filter(constructorId == 214 | 
+                          constructorId == 117 | constructorId == 6 | 
+                          constructorId == 1210 | constructorId == 1 | 
+                          constructorId == 131 | constructorId == 213 |
+                          constructorId == 9 | constructorId == 15 |
+                          constructorId == 3) %>% ggplot(aes(x = year, 
+                                    y = fastestLapTime_seconds)) + geom_smooth()
 
-#constructor standings by year
-constructor_standings_by_year<-left_join(races, constructor_standings)
 
 ```
 
