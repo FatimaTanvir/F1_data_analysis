@@ -163,25 +163,112 @@ ferrari_qualifying<- qualifying_by_year %>% filter(constructorId == 6)
 ferrari_results<- results_by_year %>% filter(constructorId == 6)
 ferrari_standings<- constructor_standings_by_year %>% filter(constructorId ==6)
 
+#summarizing for average data per season
+ferrari_avg_qualifyingTime<- ferrari_qualifying %>% group_by(year) %>% summarise(avg_time_per_season = mean(average_seconds, na.rm = TRUE))
+
+ferrari_avg_LapTime<- ferrari_results %>% group_by(year) %>% summarise(avg_fastestLapTime_per_season = mean(fastestLapTime_seconds, na.rm = TRUE)) %>% filter(!is.na(avg_fastestLapTime_per_season))
+
+ferrari_avg_fastestLapSpeed<- ferrari_results %>% group_by(year) %>% summarise(avg_fastestLapSpeed_per_season = mean(as.numeric(fastestLapSpeed), na.rm = TRUE)) %>% filter(!is.na(avg_fastestLapSpeed_per_season))
+
+ferrari_avg_finishPosition<- ferrari_results %>% group_by(year) %>% summarise(avg_finishPosition_per_season = mean(positionOrder, na.rm = TRUE)) %>% filter(!is.na(avg_finishPosition_per_season))
+
+ferrari_avg_rank<- ferrari_results %>% group_by(year) %>% summarise(avg_rank_per_season = mean(as.numeric(rank), na.rm = TRUE)) %>% filter(!is.na(avg_rank_per_season))
+
+ferrari_avg_runTime<- ferrari_results %>% group_by(year) %>% summarise(avg_runTime_per_season = mean(as.numeric(milliseconds), na.rm = TRUE)) %>% filter(!is.na(avg_runTime_per_season))
+
+ferrari_total_wins<- ferrari_standings %>% group_by(year) %>% summarise(total_wins = max(wins, na.rm = TRUE))
+
 #ferrari qualifying times by year
-ferrari_qualifying %>%  ggplot(aes(x = year, y = average_seconds)) + geom_smooth()
+ferrari_avg_qualifyingTime %>%  ggplot(aes(x = year, y = avg_time_per_season)) +geom_point(color = '#FFF200') + geom_smooth(color = '#EF1A2D') + geom_smooth(method = lm, se = FALSE, color = '#00A551')+ theme(
+    panel.background = element_rect(fill = "black"),
+    plot.background = element_rect(fill = "black"),
+    panel.grid.major = element_line(color = "gray30"),
+    panel.grid.minor = element_line(color = "gray20"),
+    axis.text = element_text(color = "white"),
+    axis.title = element_text(color = "white"),
+    plot.title = element_text(color = "white", face = "bold"),
+    legend.text = element_text(color = "white"),
+    legend.title = element_text(color = "white")
+  )
 
 #Ferrari fastest lap times by year
-ferrari_results %>% ggplot(aes(x = year, y = fastestLapTime_seconds)) + geom_smooth()
+ferrari_avg_LapTime %>% ggplot(aes(x = year, y = avg_fastestLapTime_per_season)) + geom_point(color = '#FFF200') + geom_smooth(color = '#EF1A2D')+ geom_smooth(method = lm, se = FALSE, color = '#00A551')+ theme(
+    panel.background = element_rect(fill = "black"),
+    plot.background = element_rect(fill = "black"),
+    panel.grid.major = element_line(color = "gray30"),
+    panel.grid.minor = element_line(color = "gray20"),
+    axis.text = element_text(color = "white"),
+    axis.title = element_text(color = "white"),
+    plot.title = element_text(color = "white", face = "bold"),
+    legend.text = element_text(color = "white"),
+    legend.title = element_text(color = "white")
+  )
 
 #Ferrari fastest lap speed over time
-ferrari_results %>% ggplot(aes(x = year, y = as.numeric(fastestLapSpeed))) + geom_smooth()
+ferrari_avg_fastestLapSpeed %>% ggplot(aes(x = year, y = avg_fastestLapSpeed_per_season)) + geom_point(color = '#FFF200') + geom_smooth(color = '#EF1A2D')+ geom_smooth(method = lm, se = FALSE, color = '#00A551')+ theme(
+    panel.background = element_rect(fill = "black"),
+    plot.background = element_rect(fill = "black"),
+    panel.grid.major = element_line(color = "gray30"),
+    panel.grid.minor = element_line(color = "gray20"),
+    axis.text = element_text(color = "white"),
+    axis.title = element_text(color = "white"),
+    plot.title = element_text(color = "white", face = "bold"),
+    legend.text = element_text(color = "white"),
+    legend.title = element_text(color = "white")
+  )
 
 #Ferrari finish position over time
-ferrari_results %>% ggplot(aes(x = year,y =  positionOrder)) + geom_smooth()
+ferrari_avg_finishPosition %>% ggplot(aes(x = year,y =  avg_finishPosition_per_season)) + geom_point(color = '#FFF200') + geom_smooth(color = '#EF1A2D') + geom_smooth(method = lm, se = FALSE, color = '#00A551')+ theme(
+    panel.background = element_rect(fill = "black"),
+    plot.background = element_rect(fill = "black"),
+    panel.grid.major = element_line(color = "gray30"),
+    panel.grid.minor = element_line(color = "gray20"),
+    axis.text = element_text(color = "white"),
+    axis.title = element_text(color = "white"),
+    plot.title = element_text(color = "white", face = "bold"),
+    legend.text = element_text(color = "white"),
+    legend.title = element_text(color = "white")
+  )
 
 #Ferrari rank over time
-ferrari_results %>% ggplot(aes(x = year, y = as.numeric(rank))) + geom_smooth()
+ferrari_avg_rank %>% ggplot(aes(x = year, y = avg_rank_per_season)) + geom_point(color = '#FFF200') + geom_smooth(color = '#EF1A2D')+ geom_smooth(method = lm, se = FALSE, color = '#00A551')+ theme(
+    panel.background = element_rect(fill = "black"),
+    plot.background = element_rect(fill = "black"),
+    panel.grid.major = element_line(color = "gray30"),
+    panel.grid.minor = element_line(color = "gray20"),
+    axis.text = element_text(color = "white"),
+    axis.title = element_text(color = "white"),
+    plot.title = element_text(color = "white", face = "bold"),
+    legend.text = element_text(color = "white"),
+    legend.title = element_text(color = "white")
+  )
 
 #Ferrari race run time over time
-ferrari_results %>% ggplot(aes(x = year, y = as.numeric(milliseconds)/3600000)) + geom_smooth()
+ferrari_avg_runTime %>% ggplot(aes(x = year, y = as.numeric(avg_runTime_per_season)/3600000)) + geom_point(color = '#FFF200') + geom_smooth(color = '#EF1A2D') + geom_smooth(method = lm, se = FALSE, color = '#00A551')+ theme(
+    panel.background = element_rect(fill = "black"),
+    plot.background = element_rect(fill = "black"),
+    panel.grid.major = element_line(color = "gray30"),
+    panel.grid.minor = element_line(color = "gray20"),
+    axis.text = element_text(color = "white"),
+    axis.title = element_text(color = "white"),
+    plot.title = element_text(color = "white", face = "bold"),
+    legend.text = element_text(color = "white"),
+    legend.title = element_text(color = "white")
+  )
 
 #Ferrari wins over time
-ferrari_standings %>% ggplot(aes(x = year, y = as.numeric(wins))) + geom_col()
+ferrari_total_wins %>% ggplot(aes(x = year, y = total_wins)) + geom_point(color = '#FFF200') + geom_line(color = '#EF1A2D') + geom_smooth(method = lm, se = FALSE, color = '#00A551') + theme(
+    panel.background = element_rect(fill = "black"),
+    plot.background = element_rect(fill = "black"),
+    panel.grid.major = element_line(color = "gray30"),
+    panel.grid.minor = element_line(color = "gray20"),
+    axis.text = element_text(color = "white"),
+    axis.title = element_text(color = "white"),
+    plot.title = element_text(color = "white", face = "bold"),
+    legend.text = element_text(color = "white"),
+    legend.title = element_text(color = "white")
+  )
+
+
 ```
 
