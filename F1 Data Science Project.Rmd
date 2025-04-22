@@ -78,7 +78,8 @@ qualifying_average <- qualifying %>%
 #qualifying data
 qualifying_by_year<-left_join(races, qualifying_average) 
 qualifying_by_year = left_join(qualifying_by_year, constructors, by = join_by(constructorId))
-qualifying_by_year$nameChar = as.character(qualifying_by_year$name.y)
+#delete
+qualifying_by_year$name.y = as.character(qualifying_by_year$name.y)
 
 #results data by year
 results_LapTimeSeconds <- results %>%
@@ -115,14 +116,14 @@ names(colorpalette) = c('Alpine F1 Team', 'Aston Martin', 'Ferrari', 'Haas F1 Te
 #Graphs for Part A: Overview of all current F1 teams
 
 #average qual time by year
-qualifying_by_year %>% filter(nameChar == 'Alpine F1 Team' | 
-                      nameChar == 'Aston Martin' | nameChar == 'Ferrari' | 
-                      nameChar =='Haas F1 Team' | nameChar == 'McLaren' | 
-                      nameChar == 'Mercedes' | nameChar == 'AlphaTauri' |
-                      nameChar == 'Red Bull' | nameChar == 'Sauber' |
-                      nameChar == 'Williams') %>% ggplot(aes(x = year,
+qualifying_by_year %>% filter(name.y == 'Alpine F1 Team' | 
+                      name.y == 'Aston Martin' | name.y == 'Ferrari' | 
+                      name.y =='Haas F1 Team' | name.y == 'McLaren' | 
+                      name.y == 'Mercedes' | name.y == 'AlphaTauri' |
+                      name.y == 'Red Bull' | name.y == 'Sauber' |
+                      name.y == 'Williams') %>% ggplot(aes(x = year,
                                                 y = average_seconds, color = 
-                                                nameChar)) + geom_smooth(se = 
+                                                name.y)) + geom_smooth(se = 
                                                           FALSE)+labs(
                           title = "Average Qualifying Times by Season",
           subtitle = "All current teams",
@@ -144,9 +145,10 @@ qualifying_by_year %>% filter(nameChar == 'Alpine F1 Team' |
 #wins by year for current teams
 overview_results = left_join(x =races, y = relevant_results, by = join_by(raceId))
 overview_results = left_join(overview_results, constructors, by = join_by(constructorId))
-overview_results
 constructor_wins = overview_results %>%  group_by(name.y, year.x) %>% 
   summarise(total_wins = max(wins, na.rm = TRUE)) %>% drop_na(name.y) 
+
+
 #overview_results$win = overview_results$position == '1'
 #constructor_wins = overview_results %>% filter(win == TRUE) %>% 
   #group_by(name.y, year) %>% count(win) %>% select(win_count = n)
@@ -156,7 +158,7 @@ ggplot(constructor_wins, aes(x = year.x, y = total_wins, fill = name.y)) +
                                           "Wins by Season",
                                           subtitle = "All current teams",
                                          x = "Season", y = "Wins", 
-                                         color = 'Teams') + 
+                                         fill = 'Teams') + 
    theme(
     panel.background = element_rect(fill = "black"),
     plot.background = element_rect(fill = "black"),
@@ -214,7 +216,11 @@ ferrari_qualifying<- qualifying_by_year %>% filter(constructorId == 6)
 ferrari_results<- results_by_year %>% filter(constructorId == 6)
 ferrari_standings<- constructor_standings_by_year %>% filter(constructorId ==6)
 
-#summarizing for average data per season
+Mclaren_qualifying<- qualifying_by_year %>% filter(constructorId == 1)
+Mclaren_results<- results_by_year %>% filter(constructorId == 1)
+Mclaren_standings<- constructor_standings_by_year %>% filter(constructorId == 1)
+
+#summarizing for average data per season ferrari
 ferrari_avg_qualifyingTime<- ferrari_qualifying %>% group_by(year) %>% summarise(avg_time_per_season = mean(average_seconds, na.rm = TRUE))
 
 ferrari_avg_LapTime<- ferrari_results %>% group_by(year) %>% summarise(avg_fastestLapTime_per_season = mean(fastestLapTime_seconds, na.rm = TRUE)) %>% filter(!is.na(avg_fastestLapTime_per_season))
@@ -228,6 +234,23 @@ ferrari_avg_rank<- ferrari_results %>% group_by(year) %>% summarise(avg_rank_per
 ferrari_avg_runTime<- ferrari_results %>% group_by(year) %>% summarise(avg_runTime_per_season = mean(as.numeric(milliseconds), na.rm = TRUE)) %>% filter(!is.na(avg_runTime_per_season))
 
 ferrari_total_wins<- ferrari_standings %>% group_by(year) %>% summarise(total_wins = max(wins, na.rm = TRUE))
+
+
+#summarizing for average data per season Mclaren
+Mclaren_avg_qualifyingTime<- Mclaren_qualifying %>% group_by(year) %>% summarise(avg_time_per_season = mean(average_seconds, na.rm = TRUE))
+
+Mclaren_avg_LapTime<- Mclaren_results %>% group_by(year) %>% summarise(avg_fastestLapTime_per_season = mean(fastestLapTime_seconds, na.rm = TRUE)) %>% filter(!is.na(avg_fastestLapTime_per_season))
+
+Mclaren_avg_fastestLapSpeed<- Mclaren_results %>% group_by(year) %>% summarise(avg_fastestLapSpeed_per_season = mean(as.numeric(fastestLapSpeed), na.rm = TRUE)) %>% filter(!is.na(avg_fastestLapSpeed_per_season))
+
+Mclaren_avg_finishPosition<- Mclaren_results %>% group_by(year) %>% summarise(avg_finishPosition_per_season = mean(positionOrder, na.rm = TRUE)) %>% filter(!is.na(avg_finishPosition_per_season))
+
+Mclaren_avg_rank<- Mclaren_results %>% group_by(year) %>% summarise(avg_rank_per_season = mean(as.numeric(rank), na.rm = TRUE)) %>% filter(!is.na(avg_rank_per_season))
+
+Mclaren_avg_runTime<- Mclaren_results %>% group_by(year) %>% summarise(avg_runTime_per_season = mean(as.numeric(milliseconds), na.rm = TRUE)) %>% filter(!is.na(avg_runTime_per_season))
+
+Mclaren_total_wins<- Mclaren_standings %>% group_by(year) %>% summarise(total_wins = max(wins, na.rm = TRUE))
+
 
 #ferrari qualifying times by year
 ferrari_avg_qualifyingTime %>% 
@@ -423,3 +446,196 @@ ferrari_total_wins %>% ggplot(aes(x = year, y = total_wins)) + geom_point(color 
 
 ```
 
+```{r}
+#Mclaren qualifying times by year
+Mclaren_avg_qualifyingTime %>% 
+  ggplot(aes(x = year, y = avg_time_per_season)) + 
+  geom_point(color = '#FF8000') + 
+  geom_smooth(color = '#47c7fc') + 
+  geom_smooth(linetype = "longdash", method = lm, se = FALSE, color = '#00A551') + 
+  labs(
+    title = "Mclaren Average Qualifying Times by Season",
+    subtitle = "Measured in min:ss | Lower is better | From 1994 to 2024",
+    x = "Season",
+    y = "Average Qualifying Time"
+  )+ 
+  scale_x_continuous(
+    limits = c(min(ferrari_avg_qualifyingTime$year), max(ferrari_avg_qualifyingTime$year)),
+    expand = c(0, 0)
+  )  + 
+  scale_y_continuous(
+    labels = function(x) paste0(sprintf("%02d", floor(x / 60)), ":", sprintf("%02d", round(x %% 60))) 
+  ) + 
+  theme(
+    panel.background = element_rect(fill = "black"),
+    plot.background = element_rect(fill = "black"),
+    panel.grid.major = element_line(color = "gray30"),
+    panel.grid.minor = element_line(color = "gray20"),
+    axis.text = element_text(color = "white"),
+    axis.title = element_text(color = "white"),
+    plot.title = element_text(color = "white", face = "bold", size = 16),
+    plot.subtitle = element_text(color = "white", size = 12, margin = margin(b = 10)),
+    legend.text = element_text(color = "white"),
+    legend.title = element_text(color = "white")
+  )
+
+#Mclaren fastest lap times by year
+Mclaren_avg_LapTime %>% 
+  ggplot(aes(x = year, y = avg_fastestLapTime_per_season)) + 
+  geom_point(color = '#FF8000') + 
+  geom_smooth(color = '#47c7fc') + 
+  geom_smooth(linetype = "longdash", method = lm, se = FALSE, color = '#00A551') + 
+  labs(
+    title = "Mclaren Fastest Lap Times by Season",
+    subtitle = "Measured in min:ss | Lower is better | From 2004 - 2024",
+    x = "Season",
+    y = "Average Fastest Lap Time"
+  ) + 
+  scale_x_continuous(
+    limits = c(2005, 2025),
+    expand = c(0, 0.5)
+  ) + 
+  scale_y_continuous(
+    labels = function(x) paste0(sprintf("%02d", floor(x / 60)), ":", sprintf("%02d", round(x %% 60)))
+  ) + 
+  theme(
+    panel.background = element_rect(fill = "black"),
+    plot.background = element_rect(fill = "black"),
+    panel.grid.major = element_line(color = "gray30"),
+    panel.grid.minor = element_line(color = "gray20"),
+    axis.text = element_text(color = "white"),
+    axis.title = element_text(color = "white"),
+    plot.title = element_text(color = "white", face = "bold", size = 16),
+    plot.subtitle = element_text(color = "white", size = 12, margin = margin(b = 10)),
+    legend.text = element_text(color = "white"),
+    legend.title = element_text(color = "white")
+  )
+
+#Ferrari fastest lap speed over time
+Mclaren_avg_fastestLapSpeed %>%
+  ggplot(aes(x = year, y = avg_fastestLapSpeed_per_season)) +
+  geom_point(color = '#FF8000') +
+  geom_smooth(color = '#47c7fc') +
+  geom_smooth(linetype = "longdash", method = lm, se = FALSE, color = '#00A551') +
+  labs(
+    title = "Mclaren Fastest Lap Speed by Season",
+    subtitle = "Measured in km/h and mph | From 2004 to 2024",
+    x = "Season"
+  ) +
+  scale_y_continuous(
+    name = "Average Fastest Lap Speed (km/h)",
+    sec.axis = sec_axis(~ . * 0.621371, name = "Average Fastest Lap Speed (mph)")
+  ) +
+  theme(
+    panel.background = element_rect(fill = "black"),
+    plot.background = element_rect(fill = "black"),
+    panel.grid.major = element_line(color = "gray30"),
+    panel.grid.minor = element_line(color = "gray20"),
+    axis.text = element_text(color = "white"),
+    axis.title = element_text(color = "white"),
+    plot.title = element_text(color = "white", face = "bold", size = 16),
+    plot.subtitle = element_text(color = "white", size = 12, margin = margin(b = 10)),
+    axis.text.y.right = element_text(color = "white"),
+    axis.title.y.right = element_text(color = "white"), 
+    legend.text = element_text(color = "white"),
+    legend.title = element_text(color = "white")
+  )
+
+
+#Mclaren finish position over time
+Mclaren_avg_finishPosition %>%
+  ggplot(aes(x = year, y = avg_finishPosition_per_season)) +
+  geom_point(color = '#FF8000') +
+  geom_smooth(color = '#47c7fc') +
+  geom_smooth(linetype = "longdash", method = lm, se = FALSE, color = '#00A551') +
+  labs(
+    title = "Mclaren Average Finish Position by Season",
+    subtitle = "Lower is better | From 1950 to 2024",
+    x = "Season",
+    y = "Average Finish Position"
+  ) +
+  theme(
+    panel.background = element_rect(fill = "black"),
+    plot.background = element_rect(fill = "black"),
+    panel.grid.major = element_line(color = "gray30"),
+    panel.grid.minor = element_line(color = "gray20"),
+    axis.text = element_text(color = "white"),
+    axis.title = element_text(color = "white"),
+    plot.title = element_text(color = "white", face = "bold", size = 16),
+    plot.subtitle = element_text(color = "white", size = 12, margin = margin(b = 10)),
+    legend.text = element_text(color = "white"),
+    legend.title = element_text(color = "white")
+  )
+
+#Mclaren rank over time
+Mclaren_avg_rank %>%
+  ggplot(aes(x = year, y = avg_rank_per_season)) +
+  geom_point(color = '#FF8000') +
+  geom_smooth(color = '#47c7fc') +
+  geom_smooth(linetype = "longdash", method = lm, se = FALSE, color = '#00A551') +
+  labs(
+    title = "McLaren Average Rank by Season",
+    subtitle = "Lower is better | From 2004 to 2024",
+    x = "Season",
+    y = "Average Finish Rank"
+  ) + 
+  scale_x_continuous(
+    limits = c(min(ferrari_avg_rank$year), max(ferrari_avg_rank$year) + 1),
+    expand = c(0, .5) 
+  ) + 
+  theme(
+    panel.background = element_rect(fill = "black"),
+    plot.background = element_rect(fill = "black"),
+    panel.grid.major = element_line(color = "gray30"),
+    panel.grid.minor = element_line(color = "gray20"),
+    axis.text = element_text(color = "white"),
+    axis.title = element_text(color = "white"),
+    plot.title = element_text(color = "white", face = "bold", size = 16),
+    plot.subtitle = element_text(color = "white", size = 12, margin = margin(b = 10)),
+    legend.text = element_text(color = "white"),
+    legend.title = element_text(color = "white")
+  )
+#Mclaren race run time over time
+Mclaren_avg_runTime %>%
+  ggplot(aes(x = year, y = as.numeric(avg_runTime_per_season)/3600000)) +
+  geom_point(color = '#FF8000') +
+  geom_smooth(color = '#47c7fc') +
+  geom_smooth(linetype = "longdash", method = lm, se = FALSE, color = '#00A551') +
+  labs(
+    title = "McLaren Average Runtime by Season",
+    subtitle = "Converted from milliseconds to hours | From 1950 to 2024",
+    x = "Season",
+    y = "Average Runtime (Hours)"
+  ) +
+  theme(
+    panel.background = element_rect(fill = "black"),
+    plot.background = element_rect(fill = "black"),
+    panel.grid.major = element_line(color = "gray30"),
+    panel.grid.minor = element_line(color = "gray20"),
+    axis.text = element_text(color = "white"),
+    axis.title = element_text(color = "white"),
+    plot.title = element_text(color = "white", face = "bold", size = 16),
+    plot.subtitle = element_text(color = "white", size = 12, margin = margin(b = 10)),
+    legend.text = element_text(color = "white"),
+    legend.title = element_text(color = "white")
+  )
+
+#Mclaren wins over time
+Mclaren_total_wins %>% ggplot(aes(x = year, y = total_wins)) + geom_point(color = '#FF8000') + geom_line(color = '#47c7fc') + geom_smooth(linetype = "longdash", method = lm, se = FALSE, color = '#00A551') + theme(
+    panel.background = element_rect(fill = "black"),
+    plot.background = element_rect(fill = "black"),
+    panel.grid.major = element_line(color = "gray30"),
+    panel.grid.minor = element_line(color = "gray20"),
+    axis.text = element_text(color = "white"),
+    axis.title = element_text(color = "white"),
+    plot.title = element_text(color = "white", face = "bold"),
+    plot.subtitle = element_text(color = "white", size = 12, margin = margin(b = 10)),
+    legend.text = element_text(color = "white"),
+    legend.title = element_text(color = "white")
+  ) + scale_y_continuous(breaks = seq(0, max(ferrari_total_wins$total_wins), by = 1)) + scale_x_continuous(breaks = seq(1955, 2025, by = 5)) + labs(
+    title = "McLaren Wins by Season",
+    subtitle = "From 1958 to 2024",
+    x = "Season",
+    y = "Total Wins"
+  )
+```
