@@ -639,3 +639,118 @@ Mclaren_total_wins %>% ggplot(aes(x = year, y = total_wins)) + geom_point(color 
     y = "Total Wins"
   )
 ```
+
+```{r}
+#comparing ferrari and mclaren
+
+# Combine ferrari and mcLaren summaries for comparison
+# Qualifying Time
+qualifying_comparison <- bind_rows(
+  ferrari_avg_qualifyingTime %>% mutate(Team = "Ferrari"),
+  Mclaren_avg_qualifyingTime %>% mutate(Team = "McLaren")
+)
+
+# Fastest Lap Time
+lapTime_comparison <- bind_rows(
+  ferrari_avg_LapTime %>% mutate(Team = "Ferrari"),
+  Mclaren_avg_LapTime %>% mutate(Team = "McLaren")
+)
+
+# Fastest Lap Speed
+speed_comparison <- bind_rows(
+  ferrari_avg_fastestLapSpeed %>% mutate(Team = "Ferrari"),
+  Mclaren_avg_fastestLapSpeed %>% mutate(Team = "McLaren")
+)
+
+# Finish Position
+finish_comparison <- bind_rows(
+  ferrari_avg_finishPosition %>% mutate(Team = "Ferrari"),
+  Mclaren_avg_finishPosition %>% mutate(Team = "McLaren")
+)
+
+# Rank
+rank_comparison <- bind_rows(
+  ferrari_avg_rank %>% mutate(Team = "Ferrari"),
+  Mclaren_avg_rank %>% mutate(Team = "McLaren")
+)
+
+# Wins
+wins_comparison <- bind_rows(
+  ferrari_total_wins %>% mutate(Team = "Ferrari"),
+  Mclaren_total_wins %>% mutate(Team = "McLaren")
+)
+
+# Color palette for ferrari and mcLaren
+team_colors <- c("Ferrari" = "#EF1A2D", "McLaren" = "#47C7FC")
+
+# Define the F1 dark theme to avoid repeating...cuz that's kinda annoying
+theme_f1 <- theme(
+  panel.background = element_rect(fill = "black"),
+  plot.background = element_rect(fill = "black"),
+  panel.grid.major = element_line(color = "gray30"),
+  panel.grid.minor = element_line(color = "gray20"),
+  axis.text = element_text(color = "white"),
+  axis.title = element_text(color = "white"),
+  plot.title = element_text(color = "white", face = "bold", size = 16),
+  plot.subtitle = element_text(color = "white", size = 12, margin = margin(b = 10)),
+  legend.text = element_text(color = "white"),
+  legend.title = element_text(color = "white"),
+  legend.background = element_rect(fill = "black")
+)
+
+#qualifying Time Comparison
+qualifying_comparison %>%
+  ggplot(aes(x = year, y = avg_time_per_season, color = Team)) +
+  geom_point() +
+  geom_smooth(se = FALSE) +
+  labs(title = "Ferrari vs McLaren: Average Qualifying Time", subtitle = "Lower is better | 1994-2024", x = "Season", y = "Average Qualifying Time (min:ss)", color = "Team") +
+  scale_color_manual(values = team_colors) +
+  scale_y_continuous(labels = function(x) paste0(sprintf("%02d", floor(x/60)), ":", sprintf("%02d", round(x %% 60)))) +
+  theme_f1
+
+#fastest Lap Time Comparison
+lapTime_comparison %>%
+  ggplot(aes(x = year, y = avg_fastestLapTime_per_season, color = Team)) +
+  geom_point() +
+  geom_smooth(se = FALSE) +
+  labs(title = "Ferrari vs McLaren: Fastest Lap Time", subtitle = "Lower is better", x = "Season", y = "Average Fastest Lap Time (min:ss)", color = "Team") +
+  scale_color_manual(values = team_colors) +
+  scale_y_continuous(labels = function(x) paste0(sprintf("%02d", floor(x/60)), ":", sprintf("%02d", round(x %% 60)))) +
+  theme_f1
+
+#fastest Lap Speed Comparison
+speed_comparison %>%
+  ggplot(aes(x = year, y = avg_fastestLapSpeed_per_season, color = Team)) +
+  geom_point() +
+  geom_smooth(se = FALSE) +
+  labs(title = "Ferrari vs McLaren: Fastest Lap Speed", subtitle = "Higher is better", x = "Season", y = "Average Speed (km/h)", color = "Team") +
+  scale_color_manual(values = team_colors) +
+  theme_f1
+
+#finish Position Comparison
+finish_comparison %>%
+  ggplot(aes(x = year, y = avg_finishPosition_per_season, color = Team)) +
+  geom_point() +
+  geom_smooth(se = FALSE) +
+  labs(title = "Ferrari vs McLaren: Average Finish Position", subtitle = "Lower is better", x = "Season", y = "Average Position", color = "Team") +
+  scale_color_manual(values = team_colors) +
+  theme_f1
+
+#rank Comparison
+rank_comparison %>%
+  ggplot(aes(x = year, y = avg_rank_per_season, color = Team)) +
+  geom_point() +
+  geom_smooth(se = FALSE) +
+  labs(title = "Ferrari vs McLaren: Average Rank", subtitle = "Lower is better", x = "Season", y = "Average Rank", color = "Team") +
+  scale_color_manual(values = team_colors) +
+  theme_f1
+
+#wins Comparison
+wins_comparison %>%
+  ggplot(aes(x = year, y = total_wins, color = Team)) +
+  geom_point() +
+  geom_smooth(se = FALSE) +
+  labs(title = "Ferrari vs McLaren: Wins by Season", subtitle = "Higher is better", x = "Season", y = "Total Wins", color = "Team") +
+  scale_color_manual(values = team_colors) +
+  theme_f1
+```
