@@ -78,6 +78,7 @@ qualifying_average <- qualifying %>%
 #qualifying data
 qualifying_by_year<-left_join(races, qualifying_average) 
 qualifying_by_year = left_join(qualifying_by_year, constructors, by = join_by(constructorId))
+qualifying_by_year$nameChar = as.character(qualifying_by_year$name.y)
 
 #results data by year
 results_LapTimeSeconds <- results %>%
@@ -102,36 +103,74 @@ relevant_results = left_join(x = constructor_standings_by_year, y = constructors
 ```
 
 ```{r}
+#setting color palette
+colorpalette = c('#041F30', '#FD4BC7', '#00352F', '#A6051A', '#AEAEAE', '#FF8000', 
+'#111111', '#223971', '#00E701', '#00A3E0')
+names(colorpalette) = c('Alpine F1 Team', 'Aston Martin', 'Ferrari', 'Haas F1 Team', 
+                 'McLaren', 'Mercedes', 'AlphaTauri', 'Red Bull', 'Sauber', 'Williams')
+
+```
+
+```{r}
 #Graphs for Part A: Overview of all current F1 teams
 
 #average qual time by year
-qualifying_by_year %>% filter(name.y == 'Alpine F1 Team' | 
-                      name.y == 'Aston Martin' | name.y == 'Ferrari' | 
-                      name.y =='Haas F1 Team' | name.y == 'McLaren' | 
-                      name.y == 'Mercedes' | name.y == 'AlphaTauri' |
-                      name.y == 'Red Bull' | name.y == 'Sauber' |
-                      name.y == 'Williams') %>% ggplot(aes(x = year,
+qualifying_by_year %>% filter(nameChar == 'Alpine F1 Team' | 
+                      nameChar == 'Aston Martin' | nameChar == 'Ferrari' | 
+                      nameChar =='Haas F1 Team' | nameChar == 'McLaren' | 
+                      nameChar == 'Mercedes' | nameChar == 'AlphaTauri' |
+                      nameChar == 'Red Bull' | nameChar == 'Sauber' |
+                      nameChar == 'Williams') %>% ggplot(aes(x = year,
                                                 y = average_seconds, color = 
-                                                name.y)) + geom_smooth(se = 
-                                                          FALSE) + labs(
+                                                nameChar)) + geom_smooth(se = 
+                                                          FALSE)+labs(
                           title = "Average Qualifying Times by Season",
           subtitle = "All current teams",
-          x = "Season", y = "Average Qualifying Time (min:ss)")
+          x = "Season", y = "Average Qualifying Time (min:ss)", 
+          color = 'Teams')  +   theme(
+    panel.background = element_rect(fill = "black"),
+    plot.background = element_rect(fill = "black"),
+    panel.grid.major = element_line(color = "gray30"),
+    panel.grid.minor = element_line(color = "gray20"),
+    axis.text = element_text(color = "white"),
+    axis.title = element_text(color = "white"),
+    plot.title = element_text(color = "white", face = "bold", size = 16),
+    plot.subtitle = element_text(color = "white", size = 12, margin = margin(b = 10)),
+    legend.text = element_text(color = "white"),
+    legend.title = element_text(color = "white"),
+    legend.background = element_rect(fill = "black")
+  )
 
 #wins by year for current teams
 overview_results = left_join(x =races, y = relevant_results, by = join_by(raceId))
 overview_results = left_join(overview_results, constructors, by = join_by(constructorId))
+overview_results
 constructor_wins = overview_results %>%  group_by(name.y, year.x) %>% 
-  summarise(total_wins = max(wins, na.rm = TRUE))
+  summarise(total_wins = max(wins, na.rm = TRUE)) %>% drop_na(name.y) 
 #overview_results$win = overview_results$position == '1'
 #constructor_wins = overview_results %>% filter(win == TRUE) %>% 
   #group_by(name.y, year) %>% count(win) %>% select(win_count = n)
 
-ggplot(constructor_wins, aes(x = year, y = win_count, fill = name.y)) +
+ggplot(constructor_wins, aes(x = year.x, y = total_wins, fill = name.y)) +
   geom_col(color = '#616161', width = 2, alpha = 1/2) + labs(title = 
                                           "Wins by Season",
                                           subtitle = "All current teams",
-                                         x = "Season", y = "Wins")
+                                         x = "Season", y = "Wins", 
+                                         color = 'Teams') + 
+   theme(
+    panel.background = element_rect(fill = "black"),
+    plot.background = element_rect(fill = "black"),
+    panel.grid.major = element_line(color = "gray30"),
+    panel.grid.minor = element_line(color = "gray20"),
+    axis.text = element_text(color = "white"),
+    axis.title = element_text(color = "white"),
+    plot.title = element_text(color = "white", face = "bold", size = 16),
+    plot.subtitle = element_text(color = "white", size = 12, margin = margin(b = 10)),
+    legend.text = element_text(color = "white"),
+    legend.title = element_text(color = "white"),
+    legend.background = element_rect(fill = "black")
+  )
+
 
 
 
@@ -146,7 +185,21 @@ results_by_year %>% filter(name.y == 'Alpine F1 Team' |
                                               geom_smooth(alpha = 1/5, se = FALSE) + labs(title = 
                                           "Fastest Lap Times by Season",
                                           subtitle = "All current teams",
-                                         x = "Season", y = "Lap Time (min:ss)")
+                                         x = "Season", y = "Lap Time (min:ss)", 
+                                         color = 'Teams') + 
+  theme(
+    panel.background = element_rect(fill = "black"),
+    plot.background = element_rect(fill = "black"),
+    panel.grid.major = element_line(color = "gray30"),
+    panel.grid.minor = element_line(color = "gray20"),
+    axis.text = element_text(color = "white"),
+    axis.title = element_text(color = "white"),
+    plot.title = element_text(color = "white", face = "bold", size = 16),
+    plot.subtitle = element_text(color = "white", size = 12, margin = margin(b = 10)),
+    legend.text = element_text(color = "white"),
+    legend.title = element_text(color = "white"),
+    legend.background = element_rect(fill = "black")
+  )
 
 
 
