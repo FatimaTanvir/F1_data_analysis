@@ -92,19 +92,13 @@ constructor_standings_by_year<-left_join(races, constructor_standings)
 
 ```{r}
 #filters for current teams on the grid
-relevant_results = left_join(x = results, y = constructors) %>% filter(name == 'Alpine F1 Team' | 
-                          name == 'Aston Martin' | name == 'Ferrari' | 
-                          name =='Haas F1 Team' | name == 'McLaren' | 
-                          name == 'Mercedes' | name == 'AlphaTauri' |
-                          name == 'Red Bull' | name == 'Sauber' |
-                          name == 'Williams')
-relevant_constructors = constructors %>% filter(name == 'Alpine F1 Team' | 
-                          name == 'Aston Martin' | name == 'Ferrari' | 
-                          name =='Haas F1 Team' | name == 'McLaren' | 
-                          name == 'Mercedes' | name == 'AlphaTauri' |
-                          name == 'Red Bull' | name == 'Sauber' |
-                          name == 'Williams')
-
+relevant_results = left_join(x = constructor_standings_by_year, y = constructors, 
+                  by = join_by(constructorId)) %>% filter(name.y == 
+                  'Alpine F1 Team' | name.y == 'Aston Martin' | name.y == 'Ferrari'| 
+                          name.y =='Haas F1 Team' | name.y == 'McLaren' | 
+                          name.y == 'Mercedes' | name.y == 'AlphaTauri' |
+                          name.y == 'Red Bull' | name.y == 'Sauber' |
+                          name.y == 'Williams')
 ```
 
 ```{r}
@@ -119,26 +113,26 @@ qualifying_by_year %>% filter(name.y == 'Alpine F1 Team' |
                       name.y == 'Williams') %>% ggplot(aes(x = year,
                                                 y = average_seconds, color = 
                                                 name.y)) + geom_smooth(se = 
-                                                          FALSE)
-
-#fastest lap time by year
-results_by_year %>% filter(name.y == 'Alpine F1 Team' | 
-                      name.y == 'Aston Martin' | name.y == 'Ferrari' | 
-                      name.y =='Haas F1 Team' | name.y == 'McLaren' | 
-                      name.y == 'Mercedes' | name.y == 'AlphaTauri' |
-                      name.y == 'Red Bull' | name.y == 'Sauber' |
-                      name.y == 'Williams') %>% ggplot(aes(x = year, 
-                                    y = fastestLapTime_seconds, color = name.y)) + geom_smooth(se = FALSE)
+                                                          FALSE) + labs(
+                          title = "Average Qualifying Times by Season",
+          subtitle = "All current teams",
+          x = "Season", y = "Average Qualifying Time (min:ss)")
 
 #wins by year for current teams
 overview_results = left_join(x =races, y = relevant_results, by = join_by(raceId))
 overview_results = left_join(overview_results, constructors, by = join_by(constructorId))
-overview_results$win = overview_results$position == '1'
-constructor_wins = overview_results %>% filter(win == TRUE) %>% 
-  group_by(name.y, year) %>% count(win) %>% select(win_count = n)
-constructor_wins2 = overview_results %>% filter(win == TRUE)
+constructor_wins = overview_results %>%  group_by(name.y, year.x) %>% 
+  summarise(total_wins = max(wins, na.rm = TRUE))
+#overview_results$win = overview_results$position == '1'
+#constructor_wins = overview_results %>% filter(win == TRUE) %>% 
+  #group_by(name.y, year) %>% count(win) %>% select(win_count = n)
 
-ggplot(constructor_wins, aes(x = year, y = win_count, fill = name.y)) + geom_col(color = '#616161', width = 2, alpha = 1/2)
+ggplot(constructor_wins, aes(x = year, y = win_count, fill = name.y)) +
+  geom_col(color = '#616161', width = 2, alpha = 1/2) + labs(title = 
+                                          "Wins by Season",
+                                          subtitle = "All current teams",
+                                         x = "Season", y = "Wins")
+
 
 
 #fastest lap time by year
@@ -149,7 +143,11 @@ results_by_year %>% filter(name.y == 'Alpine F1 Team' |
                       name.y == 'Red Bull' | name.y == 'Sauber' |
                       name.y == 'Williams') %>% drop_na(fastestLapTime_seconds) %>% ggplot(aes(x = year, y = 
                                               fastestLapTime_seconds, color = name.y)) + 
-                                              geom_smooth(alpha = 1/5) 
+                                              geom_smooth(alpha = 1/5, se = FALSE) + labs(title = 
+                                          "Fastest Lap Times by Season",
+                                          subtitle = "All current teams",
+                                         x = "Season", y = "Lap Time (min:ss)")
+
 
 
 
