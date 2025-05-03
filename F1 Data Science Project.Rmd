@@ -444,6 +444,63 @@ ferrari_total_wins %>% ggplot(aes(x = year, y = total_wins)) + geom_point(color 
     y = "Total Wins"
   )
 
+#Adding code to graph Ferrari qualifying position over time 
+ferrari_avg_qualifyingPos<- ferrari_qualifying %>% group_by(year) %>% summarise(avg_pos_per_season = mean(position, na.rm = TRUE))
+
+#Graph for Ferrari qualifying position over time 
+ferrari_avg_qualifyingPos %>% 
+  ggplot(aes(x = year, y = avg_pos_per_season)) + 
+  geom_point(color = '#FFF200') + 
+  geom_smooth(color = '#EF1A2D') + 
+  geom_smooth(linetype = "longdash", method = lm, se = FALSE, color = '#00A551') + 
+  labs(
+    title = "Ferrari Average Qualifying Position by Season",
+    subtitle = "Lower is better | From 1994 to 2024",
+    x = "Season",
+    y = "Average Qualifying Position"
+  )+ 
+  scale_x_continuous(
+    limits = c(min(ferrari_avg_qualifyingPos$year), max(ferrari_avg_qualifyingPos$year)),
+    expand = c(0, 0)
+  ) + theme(
+    panel.background = element_rect(fill = "black"),
+    plot.background = element_rect(fill = "black"),
+    panel.grid.major = element_line(color = "gray30"),
+    panel.grid.minor = element_line(color = "gray20"),
+    axis.text = element_text(color = "white"),
+    axis.title = element_text(color = "white"),
+    plot.title = element_text(color = "white", face = "bold", size = 16),
+    plot.subtitle = element_text(color = "white", size = 12, margin = margin(b = 10)),
+    legend.text = element_text(color = "white"),
+    legend.title = element_text(color = "white")
+  )
+#Graph to compare Ferrari qualifying position to finish position scaled to match lesser time frame
+ferrari_avg_finishPosition %>%
+  ggplot(aes(x = year, y = avg_finishPosition_per_season)) +
+  geom_point(color = '#FFF200') +
+  geom_smooth(color = '#EF1A2D') +
+  geom_smooth(linetype = "longdash", method = lm, se = FALSE, color = '#00A551') +
+  scale_x_continuous(limits = c(1994, 2024), breaks = seq(1994, 2024, by = 5)) +
+  scale_y_continuous(limits = c(2.5, 10)) +
+  labs(
+    title = "Ferrari Average Finish Position by Season",
+    subtitle = "Lower is better | From 1994 to 2024",
+    x = "Season",
+    y = "Average Finish Position"
+  ) +
+  theme(
+    panel.background = element_rect(fill = "black"),
+    plot.background = element_rect(fill = "black"),
+    panel.grid.major = element_line(color = "gray30"),
+    panel.grid.minor = element_line(color = "gray20"),
+    axis.text = element_text(color = "white"),
+    axis.title = element_text(color = "white"),
+    plot.title = element_text(color = "white", face = "bold", size = 16),
+    plot.subtitle = element_text(color = "white", size = 12, margin = margin(b = 10)),
+    legend.text = element_text(color = "white"),
+    legend.title = element_text(color = "white")
+  )
+
 ```
 
 ```{r}
