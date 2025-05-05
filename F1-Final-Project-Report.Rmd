@@ -17,6 +17,7 @@ output:
 knitr::opts_chunk$set(echo = TRUE, warning = FALSE, message = FALSE)
 ```
 
+
 # Introduction
 #### Add intro to project here
 
@@ -33,4 +34,27 @@ library(tidyverse)
 ```
 
 # Our Dataset
-#### Include info from the our dataset section on our ppt here
+##### [Our Data](https://www.kaggle.com/datasets/rohanrao/formula-1-world-championship-1950-2020)
+##### Include info from the our dataset section on our ppt here
+
+
+# Prepping our Data
+##### Include info on how we prepped our data
+
+
+# A Glance at F1
+##### Include general graphs and info here
+
+# Let's Take a Look at Ferrari!
+##### Include Ferrari graphs one chunk/graph at a time and discuss findings 
+
+
+# Comparing Ferrari and McLaren 
+##### Info here
+
+# Our Limitations
+##### Infor here
+
+# Conclusion
+##### Info here
+
