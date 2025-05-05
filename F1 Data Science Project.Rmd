@@ -6,7 +6,7 @@ date: "2025-04-10"
 ---
 
 ```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = TRUE)
+knitr::opts_chunk$set(echo = TRUE, warning = FALSE, message = FALSE)
 ```
 
 
@@ -148,10 +148,6 @@ overview_results = left_join(overview_results, constructors, by = join_by(constr
 constructor_wins = overview_results %>%  group_by(name.y, year.x) %>% 
   summarise(total_wins = max(wins, na.rm = TRUE)) %>% drop_na(name.y) 
 
-
-#overview_results$win = overview_results$position == '1'
-#constructor_wins = overview_results %>% filter(win == TRUE) %>% 
-  #group_by(name.y, year) %>% count(win) %>% select(win_count = n)
 
 ggplot(constructor_wins, aes(x = year.x, y = total_wins, fill = name.y)) +
   geom_col(color = '#616161', width = 2, alpha = 1/2) + labs(title = 
