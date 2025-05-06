@@ -566,8 +566,21 @@ After analyzing these graphs, there are a couple findings that stand out. First,
 
 # Our Limitations
 
-##### Info here
+While our analysis provides meaningful insight into Ferrari’s performance in Formula 1, there were a few key limitations that shaped our results:
+
+Limited Data Coverage: Some datasets, especially those from earlier years, had missing or inconsistent entries. This made it difficult to carry out long-term analyses across all variables. For instance, data on qualifying times only begins in 1994, and average fastest lap times from 2005, limiting the scope of historical comparisons.
+
+Assumption of Team Uniformity: Our analysis treated Ferrari as a single, consistent team. In reality, performance is influenced by changing drivers, team management, strategies, car designs, and regulation shifts. These nuanced changes weren’t fully reflected in our year-to-year averages.
+
+Simplification Through Averages: We relied on annual averages to reveal broad trends in performance. While effective for spotting general patterns, this method smooths over race-to-race variability and may overlook standout performances or anomalies that could offer deeper insights.
+
 
 # Conclusion
 
-##### Info here
+Our analysis of Ferrari’s history in Formula 1 reveals a clear upward trend in performance over time. From faster qualifying sessions to better race finishes, the data suggests steady progress driven by advances in technology, engineering, and team coordination.
+
+We specifically explored correlations between qualifying positions and final championship standings, as well as between qualifying times and average fastest lap speeds. These relationships reinforced how critical qualifying performance is to overall success on race day.
+
+However, we also identified a noticeable dip in performance between 2006 and 2013, which aligns with major FIA regulation, and engine type changes aimed at slowing cars down for safety. This highlights how external factors, such as rule changes, can have a major impact, sometimes more than internal team development alone.
+
+Overall, Ferrari’s ability to adapt and continue improving stands out. With the growing role of data science in sports and greater access to detailed performance metrics, there's strong potential to uncover even deeper, more predictive insights into team performance and trends across F1 as a whole.
