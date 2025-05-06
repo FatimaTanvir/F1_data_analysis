@@ -251,6 +251,8 @@ ggplot(constructor_wins, aes(x = year.x, y = total_wins, fill = name.y)) +
 
 # Now Let's Take a Look at Ferrari!
 
+To process our data further and extract only the information relevant to Ferrari, we filtered by the ID associated with Ferrari and averaged our data by season/year to make our graphs easier to comprehend. Unfortunately, after processing, many of our visualizations only span as far back as 1994 or 2004 due to missing data. To ensure comprehensive analysis, we analyzed several variables in search of correlations regarding qualifying times and fastest lap times, qualifying positions and finishing positions. Beyond such, we visualized Ferrari’s rank over time, wins over time, and race runtime over time to determine an overall trend. 
+
 ```{r, echo = FALSE}
 #not included in final html 
 #filtering for Ferrari
@@ -276,7 +278,11 @@ ferrari_total_wins<- ferrari_standings %>% group_by(year) %>% summarise(total_wi
 ferrari_avg_qualifyingPos<- ferrari_qualifying %>% group_by(year) %>% summarise(avg_pos_per_season = mean(position, na.rm = TRUE))
 ```
 
+
 #### Ferrari Qualifying Times by Year
+
+First, we have qualifying times since 1994. Here you can see a downward trend until 2006 where the trend reverses up until 2013 before returning to a downward trend. 
+
 ```{r, echo = FALSE}
 #ferrari qualifying times by year
 ferrari_avg_qualifyingTime %>% 
@@ -311,7 +317,11 @@ ferrari_avg_qualifyingTime %>%
   )
 ```
 
+
 #### Ferrari's Fastest Lap Times 
+
+Next, Fastest lap time, is referring to the average fastest lap time during a championship race, not qualifying. A similar story to our previous graph can be interpreted but this time we only have data from 2005 and beyond. From 2005 to 2013 there is an upward trend and after 2013 the trend reverses. This aligns with our previous graph and can conclude that qualifying times are correlated with fastest lap time. 
+
 ```{r, echo = FALSE}
 #Ferrari fastest lap times by year
 ferrari_avg_LapTime %>% 
@@ -346,7 +356,11 @@ ferrari_avg_LapTime %>%
   )
 ```
 
+
 #### Ferrari's Fastest Lap Speed
+
+Below shows Ferrari’s average fastest lap speed during a championship race. This trend shows the inverse of the previous graphs but yet again tells the same story. In 2006 Ferrari’s speed decreased on average before increasing after 2013. 
+
 ```{r, echo = FALSE}
 #Ferrari fastest lap speed over time
 ferrari_avg_fastestLapSpeed %>%
@@ -379,8 +393,10 @@ ferrari_avg_fastestLapSpeed %>%
   )
 ```
 
-
 #### Ferrari's Finish Positions
+
+Here we have Ferrari’s average finishing position from 1950 – 2024. Because this is our first variable with complete data, you can see Ferrari’s overall finishing position has steadily improved over time.
+
 ```{r, echo = FALSE}
 #Ferrari finish position over time
 ferrari_avg_finishPosition %>%
@@ -408,8 +424,10 @@ ferrari_avg_finishPosition %>%
   )
 ```
 
-
 #### Ferrari's Qualifying Positions VS Their Finish Positions
+
+Because we intend to show a correlation between the average qualifying finish position and average championship finish position, we took the previous graph and scaled it to match our qualifying position graph which only spans from 1994 to 2024. See the next graph to compare. 
+
 ```{r, echo = FALSE}
 #Graph to compare Ferrari qualifying position to finish position scaled to match lesser time frame
 ferrari_avg_finishPosition %>%
@@ -439,8 +457,10 @@ ferrari_avg_finishPosition %>%
   )
 ```
 
-
 #### Ferrari's Qualifying Positions
+
+Using the graph below and comparing it to the finishing position graph, it is apparent that our data points and overall trend are nearly identical concluding there is a significant correlation between the two.
+
 ```{r, echo = FALSE}
 #Graph for Ferrari qualifying position over time 
 ferrari_avg_qualifyingPos %>% 
@@ -474,6 +494,8 @@ ferrari_avg_qualifyingPos %>%
 #### Ferrari's Race Run Time
 ##### Run time is the amount of time it takes for a driver to complete a particular race.
 
+Our next two graphs are not to show correlations but to show the overall trend over time. First, our average runtime graph refers to the time it takes for Ferrari to complete the entire championship race. The apparent trend is significantly downwards implying Ferrari has gotten faster over time. 
+
 ```{r, echo = FALSE}
 #Ferrari race run time over time
 ferrari_avg_runTime %>%
@@ -502,6 +524,9 @@ ferrari_avg_runTime %>%
 ```
 
 #### Ferrari's Wins 
+
+Finally, we’re left with Ferrari’s wins since 1958. Here, we can see that in 2002 and 2004 Ferrari achieved their all-time high of 15 wins in a season and, on average, are achieving more wins per season. 
+
 ```{r, echo = FALSE}
 #Ferrari wins over time
 ferrari_total_wins %>% ggplot(aes(x = year, y = total_wins)) + geom_point(color = '#FFF200') + geom_line(color = '#EF1A2D') + geom_smooth(linetype = "longdash", method = lm, se = FALSE, color = '#00A551') + theme(
@@ -523,7 +548,7 @@ ferrari_total_wins %>% ggplot(aes(x = year, y = total_wins)) + geom_point(color 
   )
 ```
 
-
+After analyzing these graphs, there are a couple findings that stand out. First, when looking at our trends regarding Ferrari’s overall performance we can conclude that Ferrari’s performance has improved over time and can be expected to continue as such. Second, every graph follows the same trend of increasing speed until 2006 then decreasing in speed until 2013. This was unexpected to find as we hypothesized that trends would show steady improvement over time. Upon further investigation, we determined that a regulation change mandated by the FIA was the culprit for this reverse in the trend. In 2006, the FIA imposed regulations regarding engine specifications requiring teams to downsize their engines to the new standard. This regulation was enacted to slow down vehicle speeds in an effort to increase overall safety and as you can see in our visualizations, their plan was a success. 
 
 
 # Our Limitations
