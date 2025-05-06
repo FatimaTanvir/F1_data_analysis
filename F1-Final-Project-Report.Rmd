@@ -40,7 +40,23 @@ status<- read.csv("f1data/status.csv")
 
 ## What Were We Looking For
 
-#### Add questions here
+##### Formula 1 is an ever evolving sport that's been around for decades. Due to this we were curious to see if overall performance has changed in the sport over time. Some of the things we sought out to analyze include: <br>
+
+
+1. How did qualifying times and lap times change over time? <br>
+
+
+2. Which teams had the most wins? <br>
+
+
+3. Does high performance in qualifying translate to high performance during the race? <br>
+
+
+4. Is there a correlation between qualifying rank and race finish position? <br>
+
+
+5. How did Ferrari's performance look over time? 
+
 
 # Packages Used
 
