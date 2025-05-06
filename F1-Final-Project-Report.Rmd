@@ -6,7 +6,7 @@ output:
   html_document:
     code_folding: show
     toc: TRUE
-    toc_depth: 2
+    toc_depth: 1
     toc_float: TRUE
 ---
 
@@ -37,11 +37,10 @@ status<- read.csv("f1data/status.csv")
 
 # Introduction
 
-#### Add intro to project here
+#### F1, or Formula 1 is an international racing sport with open cockpit single seater cars. It was established in 1947 
 
 
-
-# What We Were Looking For
+## What We Were Looking For
 
 #### Add questions here
 
@@ -50,7 +49,7 @@ status<- read.csv("f1data/status.csv")
 # Packages Used
 
 ```{r}
-library(dplyr)
+library(dplyr) 
 library(ggplot2)
 library(tidyverse)
 ```
@@ -59,16 +58,41 @@ library(tidyverse)
 
 ##### [Our Data](https://www.kaggle.com/datasets/rohanrao/formula-1-world-championship-1950-2020)
 
-##### Include info from the our dataset section on our ppt here
+##### Our dataset came in the form of a database with multiple dataframes.It includes information such as information on all the drivers and teams that have competed in Formula 1, lap times by individual race, results for contstructor and driver championships, qualifying and srpint race results, grand prix results, and many more. The dataframes relevant to this project are the constructor IDs (to be used for filtering for the relevant contructors), constructor standings, qualifying, lap times, and results (displayed below)
+
+##### Constructor IDs:
+```{r, echo = FALSE}
+glimpse(constructors)
+```
+
+#### Constructor Standings:
+```{r, echo = FALSE}
+glimpse(constructor_standings)
+```
+
+#### Qualifying Results:
+```{r, echo = FALSE}
+glimpse(qualifying)
+```
+
+#### Lap Times:
+```{r, echo = FALSE}
+glimpse(lap_times)
+```
+
+#### Race Results:
+```{r, echo = FALSE}
+glimpse(results)
+```
 
 
 
 # Prepping our Data
 
-##### Include info on how we prepped our data
+##### There was a lot of work to be done to prep our data and ensure it was useable for plotting. We mainly had to use joins to add year and constructor information to the dataframes that did not include that information. Additionally, we filtered for the constructors we would be analyzing. We also needed to create functions to convert any time data into only seconds to be able to plot time data.
 
-### Functions and Mutations
-
+### Our Functions
+#### Used to convert all time data to seconds
 ```{r}
 
 #convert "min:sec.ms" string to total seconds (as a number)
@@ -85,7 +109,9 @@ seconds_to_time <- function(total_seconds) {
   remaining_seconds <- total_seconds - (minutes * 60)
   return(sprintf("%d:%.3f", minutes, remaining_seconds))
 }
+```
 
+```{r, echo = FALSE}
 #average lap times and mutate a new column
 qualifying_average <- qualifying %>%
   mutate(
@@ -100,14 +126,15 @@ qualifying_average <- qualifying %>%
     average_time = sapply(average_seconds, seconds_to_time)
   ) %>%
   select(-q1_seconds, -q2_seconds, -q3_seconds)
+
 ```
 
-### Joins
+
+### Our Joins
+##### These were used to add year and constructor information to the dataframes we would be working with to allow us to analyze trends in performance over the course of the sport.
 
 ```{r}
-#Joins to add years to data frames for graphing
-
-#adding years qualifying data
+#adding years to qualifying data
 qualifying_by_year<-left_join(races, qualifying_average) 
 qualifying_by_year = left_join(qualifying_by_year, constructors, by = join_by(constructorId))
 
@@ -135,8 +162,37 @@ relevant_results = left_join(x = constructor_standings_by_year, y = constructors
                           name.y == 'Williams')
 ```
 
-##### Include general graphs and info here
+#### Fastest Lap Times by Season by Team
+```{r, echo = FALSE}
+#fastest lap time by year
+results_by_year %>% filter(name.y == 'Alpine F1 Team' | 
+                      name.y == 'Aston Martin' | name.y == 'Ferrari' | 
+                      name.y =='Haas F1 Team' | name.y == 'McLaren' | 
+                      name.y == 'Mercedes' | name.y == 'AlphaTauri' |
+                      name.y == 'Red Bull' | name.y == 'Sauber' |
+                      name.y == 'Williams') %>% drop_na(fastestLapTime_seconds) %>% ggplot(aes(x = year, y = 
+                                              fastestLapTime_seconds, color = name.y)) + 
+                                              geom_smooth(alpha = 1/5, se = FALSE) + labs(title = 
+                                          "Fastest Lap Times by Season",
+                                          subtitle = "All current teams",
+                                         x = "Season", y = "Lap Time (min:ss)", 
+                                         color = 'Teams') + 
+  theme(
+    panel.background = element_rect(fill = "black"),
+    plot.background = element_rect(fill = "black"),
+    panel.grid.major = element_line(color = "gray30"),
+    panel.grid.minor = element_line(color = "gray20"),
+    axis.text = element_text(color = "white"),
+    axis.title = element_text(color = "white"),
+    plot.title = element_text(color = "white", face = "bold", size = 16),
+    plot.subtitle = element_text(color = "white", size = 12, margin = margin(b = 10)),
+    legend.text = element_text(color = "white"),
+    legend.title = element_text(color = "white"),
+    legend.background = element_rect(fill = "black")
+  )
+```
 
+#### Average Qualifying Times by Season by Team
 ```{r, echo = FALSE}
 #average qual time by year
 qualifying_by_year %>% filter(name.y == 'Alpine F1 Team' | 
@@ -147,8 +203,8 @@ qualifying_by_year %>% filter(name.y == 'Alpine F1 Team' |
                       name.y == 'Williams') %>% ggplot(aes(x = year,
                                                 y = average_seconds, color = 
                                                 name.y)) + geom_smooth(se = 
-                                                          FALSE)+labs(
-                          title = "Average Qualifying Times by Season",
+                                                          FALSE) + 
+                    labs( title = "Average Qualifying Times by Season",
           subtitle = "All current teams",
           x = "Season", y = "Average Qualifying Time (min:ss)", 
           color = 'Teams')  +   theme(
@@ -164,7 +220,11 @@ qualifying_by_year %>% filter(name.y == 'Alpine F1 Team' |
     legend.title = element_text(color = "white"),
     legend.background = element_rect(fill = "black")
   )
+```
 
+#### Number of Wins Per Season by Team
+##### Teams with no graph data have not had any wins.
+```{r, echo = FALSE}
 #wins by year for current teams
 overview_results = left_join(x =races, y = relevant_results, by = join_by(raceId))
 overview_results = left_join(overview_results, constructors, by = join_by(constructorId))
@@ -173,42 +233,13 @@ constructor_wins = overview_results %>%  group_by(name.y, year.x) %>%
 
 
 ggplot(constructor_wins, aes(x = year.x, y = total_wins, fill = name.y)) +
-  geom_col(color = '#616161', width = 2, alpha = 1/2) + labs(title = 
+  geom_col(color = '#616161', width = 2, alpha = 1/2)+ facet_wrap(~ name.y) + 
+                                        labs(title = 
                                           "Wins by Season",
                                           subtitle = "All current teams",
                                          x = "Season", y = "Wins", 
                                          fill = 'Teams') + 
    theme(
-    panel.background = element_rect(fill = "black"),
-    plot.background = element_rect(fill = "black"),
-    panel.grid.major = element_line(color = "gray30"),
-    panel.grid.minor = element_line(color = "gray20"),
-    axis.text = element_text(color = "white"),
-    axis.title = element_text(color = "white"),
-    plot.title = element_text(color = "white", face = "bold", size = 16),
-    plot.subtitle = element_text(color = "white", size = 12, margin = margin(b = 10)),
-    legend.text = element_text(color = "white"),
-    legend.title = element_text(color = "white"),
-    legend.background = element_rect(fill = "black")
-  )
-
-
-
-
-#fastest lap time by year
-results_by_year %>% filter(name.y == 'Alpine F1 Team' | 
-                      name.y == 'Aston Martin' | name.y == 'Ferrari' | 
-                      name.y =='Haas F1 Team' | name.y == 'McLaren' | 
-                      name.y == 'Mercedes' | name.y == 'AlphaTauri' |
-                      name.y == 'Red Bull' | name.y == 'Sauber' |
-                      name.y == 'Williams') %>% drop_na(fastestLapTime_seconds) %>% ggplot(aes(x = year, y = 
-                                              fastestLapTime_seconds, color = name.y)) + 
-                                              geom_smooth(alpha = 1/5, se = FALSE) + labs(title = 
-                                          "Fastest Lap Times by Season",
-                                          subtitle = "All current teams",
-                                         x = "Season", y = "Lap Time (min:ss)", 
-                                         color = 'Teams') + 
-  theme(
     panel.background = element_rect(fill = "black"),
     plot.background = element_rect(fill = "black"),
     panel.grid.major = element_line(color = "gray30"),
@@ -526,10 +557,6 @@ ferrari_avg_finishPosition %>%
   )
 ```
 
-
-# Comparing Ferrari and McLaren
-
-##### Info here
 
 # Our Limitations
 
