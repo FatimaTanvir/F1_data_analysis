@@ -35,10 +35,10 @@ status<- read.csv("f1data/status.csv")
 
 # Introduction
 
-#### F1, or Formula 1 is an international racing sport with open cockpit single seater cars. It was established in 1947 
+##### F1, or Formula 1 was established in 1947. It is an international racing sport with open cockpit single seater cars consisting of over 20 races per season with 10 teams--also known as constructors-- competing with two drivers each. Each season two championships are on the line, the constructors championship and the drivers championship. Points for these championships are earned by individual drivers by ranking well in Grand Prix races, and teams points are determined by consolidating the points individually earned by the drivers. 
 
 
-## What We Were Looking For
+## What Were We Looking For
 
 #### Add questions here
 
@@ -54,7 +54,7 @@ library(tidyverse)
 
 ##### [Our Data](https://www.kaggle.com/datasets/rohanrao/formula-1-world-championship-1950-2020)
 
-##### Our dataset came in the form of a database with multiple dataframes.It includes information such as information on all the drivers and teams that have competed in Formula 1, lap times by individual race, results for contstructor and driver championships, qualifying and srpint race results, grand prix results, and many more. The dataframes relevant to this project are the constructor IDs (to be used for filtering for the relevant contructors), constructor standings, qualifying, lap times, and results (displayed below)
+##### Our dataset came in the form of a database with multiple dataframes. It includes information such as information on all the drivers and teams that have competed in Formula 1, lap times by individual race, results for contstructor and driver championships, qualifying and srpint race results, grand prix results, and many more. The dataframes relevant to this project are the constructor IDs (to be used for filtering for the relevant contructors), constructor standings, qualifying, lap times, and results (displayed below). The information in our database spans from 1950 to 2024.
 
 ##### Constructor IDs:
 ```{r, echo = FALSE}
@@ -86,7 +86,7 @@ glimpse(results)
 ##### There was a lot of work to be done to prep our data and ensure it was useable for plotting. We mainly had to use joins to add year and constructor information to the dataframes that did not include that information. Additionally, we filtered for the constructors we would be analyzing. We also needed to create functions to convert any time data into only seconds to be able to plot time data.
 
 ### Our Functions
-#### Used to convert all time data to seconds
+####### Used to convert all time data to seconds
 ```{r}
 
 #convert "min:sec.ms" string to total seconds (as a number)
@@ -125,7 +125,7 @@ qualifying_average <- qualifying %>%
 
 
 ### Our Joins
-##### These were used to add year and constructor information to the dataframes we would be working with to allow us to analyze trends in performance over the course of the sport.
+####### These were used to add year and constructor information to the dataframes we would be working with to allow us to analyze trends in performance over the course of the sport.
 
 ```{r}
 #adding years to qualifying data
@@ -144,6 +144,7 @@ constructor_standings_by_year<-left_join(races, constructor_standings)
 ```
 
 # A Glance at F1
+###### With over 100 teams having competed over the years, we decided to take a look at the 10 that raced in the 2024 season.
 
 ```{r, echo = FALSE}
 #filters for current teams on the grid
@@ -156,7 +157,11 @@ relevant_results = left_join(x = constructor_standings_by_year, y = constructors
                           name.y == 'Williams')
 ```
 
-#### Fastest Lap Times by Season by Team
+#### Fastest Lap Times by Season by Team*
+##### Looking at this graph we can see that lap times significantly increased from 2006 to 2013, then experienced a severe decline. This tells us that cars were slower during that time period. In addition, this graph tells us that Alpine, Aston Martin, and Alpha Tauri did not start competing as constructors in Formula 1 until at least 2020.
+
+
+*The graph only shows data from 2005 due to there not being data available before 2005 on lap times.
 ```{r, echo = FALSE}
 #fastest lap time by year
 results_by_year %>% filter(name.y == 'Alpine F1 Team' | 
@@ -186,7 +191,9 @@ results_by_year %>% filter(name.y == 'Alpine F1 Team' |
   )
 ```
 
+
 #### Average Qualifying Times by Season by Team
+##### For this graph, the lower the qualifying time the better as it means the cars were faster. We see a similar trend in lap times with quaifying times increasing across the board from 2006 to 2013. 
 ```{r, echo = FALSE}
 #average qual time by year
 qualifying_by_year %>% filter(name.y == 'Alpine F1 Team' | 
@@ -216,8 +223,10 @@ qualifying_by_year %>% filter(name.y == 'Alpine F1 Team' |
   )
 ```
 
-#### Number of Wins Per Season by Team
-##### Teams with no graph data have not had any wins.
+#### Number of Wins Per Season by Team*
+##### This graph shows the number of times each current teams have won races over the years. We can see that among them McLaren and Ferrari were around and winning for the longest, while Mercedes and Red Bull have been earning more wins overall, but in recent years.
+
+*Teams with no graph data have not had any wins.
 ```{r, echo = FALSE}
 #wins by year for current teams
 overview_results = left_join(x =races, y = relevant_results, by = join_by(raceId))
@@ -248,6 +257,10 @@ ggplot(constructor_wins, aes(x = year.x, y = total_wins, fill = name.y)) +
   )
 
 ```
+
+##### After taking a look at all the graphs above, we noticed that Ferrari has both been around since the conception of the sport and also been performing consistently well throughout its time competing in Formula 1. Due to these characteristics, we decided to do our focused analyses on the Ferrari team.
+
+
 
 # Now Let's Take a Look at Ferrari!
 
