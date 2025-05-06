@@ -14,32 +14,9 @@ output:
 knitr::opts_chunk$set(echo = TRUE, warning = FALSE, message = FALSE)
 ```
 
-# Introduction
 
-#### Add intro to project here
-
-# What We Were Looking For
-
-#### Add questions here
-
-# Packages Used
-
-```{r}
-library(dplyr)
-library(ggplot2)
-library(tidyverse)
-```
-
-# Our Dataset
-
-##### [Our Data](https://www.kaggle.com/datasets/rohanrao/formula-1-world-championship-1950-2020)
-
-##### Include info from the our dataset section on our ppt here
-
-### The CSV files
-
-```{r}
-#reading files
+```{r, echo = FALSE}
+#stuff we need to run that we don't want displayed in our html file
 circuits<- read.csv("f1data/circuits.csv")
 constructor_results<- read.csv("f1data/constructor_results.csv")
 constructor_standings<- read.csv("f1data/constructor_standings.csv")
@@ -57,14 +34,42 @@ status<- read.csv("f1data/status.csv")
 
 ```
 
+
+# Introduction
+
+#### Add intro to project here
+
+
+
+# What We Were Looking For
+
+#### Add questions here
+
+
+
+# Packages Used
+
+```{r}
+library(dplyr)
+library(ggplot2)
+library(tidyverse)
+```
+
+# Our Dataset
+
+##### [Our Data](https://www.kaggle.com/datasets/rohanrao/formula-1-world-championship-1950-2020)
+
+##### Include info from the our dataset section on our ppt here
+
+
+
 # Prepping our Data
 
 ##### Include info on how we prepped our data
 
-### Functions and mutations
+### Functions and Mutations
 
 ```{r}
-#Functions
 
 #convert "min:sec.ms" string to total seconds (as a number)
 time_to_seconds <- function(time_str) {
@@ -102,11 +107,9 @@ qualifying_average <- qualifying %>%
 ```{r}
 #Joins to add years to data frames for graphing
 
-#qualifying data
+#adding years qualifying data
 qualifying_by_year<-left_join(races, qualifying_average) 
 qualifying_by_year = left_join(qualifying_by_year, constructors, by = join_by(constructorId))
-#delete
-qualifying_by_year$name.y = as.character(qualifying_by_year$name.y)
 
 #results data by year
 results_LapTimeSeconds <- results %>%
@@ -121,9 +124,7 @@ constructor_standings_by_year<-left_join(races, constructor_standings)
 
 # A Glance at F1
 
-### Filtering and color coordinating the current teams on the grid
-
-```{r}
+```{r, echo = FALSE}
 #filters for current teams on the grid
 relevant_results = left_join(x = constructor_standings_by_year, y = constructors, 
                   by = join_by(constructorId)) %>% filter(name.y == 
@@ -132,19 +133,11 @@ relevant_results = left_join(x = constructor_standings_by_year, y = constructors
                           name.y == 'Mercedes' | name.y == 'AlphaTauri' |
                           name.y == 'Red Bull' | name.y == 'Sauber' |
                           name.y == 'Williams')
-
-#setting color palette
-colorpalette = c('#041F30', '#FD4BC7', '#00352F', '#A6051A', '#AEAEAE', '#FF8000', 
-'#111111', '#223971', '#00E701', '#00A3E0')
-names(colorpalette) = c('Alpine F1 Team', 'Aston Martin', 'Ferrari', 'Haas F1 Team', 
-                 'McLaren', 'Mercedes', 'AlphaTauri', 'Red Bull', 'Sauber', 'Williams')
 ```
 
 ##### Include general graphs and info here
 
-```{r}
-#Graphs for Part A: Overview of all current F1 teams
-
+```{r, echo = FALSE}
 #average qual time by year
 qualifying_by_year %>% filter(name.y == 'Alpine F1 Team' | 
                       name.y == 'Aston Martin' | name.y == 'Ferrari' | 
@@ -232,12 +225,9 @@ results_by_year %>% filter(name.y == 'Alpine F1 Team' |
 ```
 
 # Let's Take a Look at Ferrari!
+##### Include Ferrari graphs one chunk/graph at a time and discuss findings
 
-### Filtering for Ferrari data and averaging data per season
-
-```{r}
-# graphs for Part B: A closer look at Ferrari
-
+```{r, echo = FALSE}
 #filtering for Ferrari
 ferrari_qualifying<- qualifying_by_year %>% filter(constructorId == 6)
 ferrari_results<- results_by_year %>% filter(constructorId == 6)
@@ -261,9 +251,9 @@ ferrari_total_wins<- ferrari_standings %>% group_by(year) %>% summarise(total_wi
 ferrari_avg_qualifyingPos<- ferrari_qualifying %>% group_by(year) %>% summarise(avg_pos_per_season = mean(position, na.rm = TRUE))
 ```
 
-##### Include Ferrari graphs one chunk/graph at a time and discuss findings
 
-```{r}
+
+```{r, echo = FALSE}
 #ferrari qualifying times by year
 ferrari_avg_qualifyingTime %>% 
   ggplot(aes(x = year, y = avg_time_per_season)) + 
@@ -298,7 +288,7 @@ ferrari_avg_qualifyingTime %>%
 ```
 
 
-```{r}
+```{r, echo = FALSE}
 #Ferrari fastest lap times by year
 ferrari_avg_LapTime %>% 
   ggplot(aes(x = year, y = avg_fastestLapTime_per_season)) + 
@@ -333,7 +323,7 @@ ferrari_avg_LapTime %>%
 ```
 
 
-```{r}
+```{r, echo = FALSE}
 #Ferrari fastest lap speed over time
 ferrari_avg_fastestLapSpeed %>%
   ggplot(aes(x = year, y = avg_fastestLapSpeed_per_season)) +
@@ -366,7 +356,7 @@ ferrari_avg_fastestLapSpeed %>%
 ```
 
 
-```{r}
+```{r, echo = FALSE}
 #Ferrari finish position over time
 ferrari_avg_finishPosition %>%
   ggplot(aes(x = year, y = avg_finishPosition_per_season)) +
@@ -394,7 +384,7 @@ ferrari_avg_finishPosition %>%
 ```
 
 
-```{r}
+```{r, echo = FALSE}
 #Ferrari rank over time
 ferrari_avg_rank %>%
   ggplot(aes(x = year, y = avg_rank_per_season)) +
@@ -426,7 +416,7 @@ ferrari_avg_rank %>%
 ```
 
 
-```{r}
+```{r, echo = FALSE}
 #Ferrari race run time over time
 ferrari_avg_runTime %>%
   ggplot(aes(x = year, y = as.numeric(avg_runTime_per_season)/3600000)) +
@@ -454,7 +444,7 @@ ferrari_avg_runTime %>%
 ```
 
 
-```{r}
+```{r, echo = FALSE}
 #Ferrari wins over time
 ferrari_total_wins %>% ggplot(aes(x = year, y = total_wins)) + geom_point(color = '#FFF200') + geom_line(color = '#EF1A2D') + geom_smooth(linetype = "longdash", method = lm, se = FALSE, color = '#00A551') + theme(
     panel.background = element_rect(fill = "black"),
@@ -476,7 +466,7 @@ ferrari_total_wins %>% ggplot(aes(x = year, y = total_wins)) + geom_point(color 
 ```
 
 
-```{r}
+```{r, echo = FALSE}
 #Graph for Ferrari qualifying position over time 
 ferrari_avg_qualifyingPos %>% 
   ggplot(aes(x = year, y = avg_pos_per_season)) + 
@@ -507,7 +497,7 @@ ferrari_avg_qualifyingPos %>%
 ```
 
 
-```{r}
+```{r, echo = FALSE}
 #Graph to compare Ferrari qualifying position to finish position scaled to match lesser time frame
 ferrari_avg_finishPosition %>%
   ggplot(aes(x = year, y = avg_finishPosition_per_season)) +
