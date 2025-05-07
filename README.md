@@ -46,15 +46,15 @@
 
 1. Clone or download the repository 
  ```bash
- git clone https://github.com/FatimaTanvir/Data2401_final.git
- cd Data2401_final
-
+  git clone https://github.com/FatimaTanvir/F1_data_analysis
+cd F1_data_analysis
+  ```
 2. Open the R Markdown file.
  3. Launch RStudio and open F1 Data Science Project.Rmd.
  4. Install required packages (if not already installed):
- ```bash
- install.packages(c("tidyverse", "lubridate", "ggplot2", "readr"))
- 
+  ```bash
+  install.packages(c("tidyverse", "lubridate", "ggplot2", "readr"))
+ ```
  5. Run the notebook.
  Click the "Knit" button in RStudio to render the analysis into HTML or PDF format. This will include all visualizations and insights.
 
